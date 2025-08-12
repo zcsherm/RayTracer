@@ -1,7 +1,7 @@
 # Creates a class for a basic solid in space
 
 import space
-import ray
+from ray import Ray
 import numpy as np
 
 COLOR_MAP = {
@@ -28,13 +28,24 @@ COLOR_MAP = {
 
 class Vertex:
 
-    def __init__(self,x,y,z):
-        self._x_coordinate = x
-        self._y_coordinate = y
-        self._z_coordinate = z
+    def __init__(self, point: np.ndarray, color: tuple):
+        self._x_coordinate = point[0]
+        self._y_coordinate = point[1]
+        self._z_coordinate = point[2]
+        self._coordinates = point
+        self._color = color
 
     def get_vertex(self):
-        return np.array([self._x_coordinate,self._y_coordinate,self._z_coordinate])
+        return self._coordinates
+
+    def get_color(self):
+        return self._color
+
+    def get_color_from_barycentric_value(self, u):
+        """
+        Returns the adjusted color from this vertex given the relative distance from this point on a plane (u, v, or w from barycentric equations)
+        """
+        return self._color * u
 
 class Surface:
 
