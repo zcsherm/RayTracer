@@ -1,0 +1,43 @@
+from renderer import *
+from camera import *
+from physical_object import *
+from space import *
+from ray import *
+import timeit
+
+renderer = Renderer(200,200)
+space= Space(400,400,400)
+renderer.add_space(space)
+camera = Camera()
+renderer.add_camera(camera)
+v1 = Vertex(-1, 0, 5)
+v2 = Vertex(0, 1.72, 5)
+v3 = Vertex(1, 0, 5)
+s1 = Surface(v1,v2,v3)
+s1.set_color('green')
+renderer.add_surface(s1)
+v1 = Vertex(-20, 0, 15)
+v2 = Vertex(0, 1.72, 15)
+v3 = Vertex(1, 0, 15)
+s1 = Surface(v1,v2,v3)
+s1.set_color('black')
+renderer.add_surface(s1)
+v1 = Vertex(5, 0, 1)
+v2 = Vertex(5, 1.72, 0)
+v3 = Vertex(5, 0, -1)
+s1 = Surface(v1,v2,v3)
+s1.set_color('yellow')
+renderer.add_surface(s1)
+v1 = Vertex(-1, 0, -50)
+v2 = Vertex(0, 1.72, -50)
+v3 = Vertex(1, 0, -50)
+s1 = Surface(v1,v2,v3)
+s1.set_color('orange')
+renderer.add_surface(s1)
+v1 = Vertex(12,12,33)
+v2 = Vertex(25,25,33)
+v3 = Vertex(12,25,33)
+s1 = Surface(v1,v2,v3)
+s1.set_color('red')
+renderer.add_surface(s1)
+renderer.create_window()
