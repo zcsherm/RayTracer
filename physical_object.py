@@ -86,9 +86,6 @@ class Surface:
 
     def make_line_segment(start_vertex, end_vertex):
         return start_vertex.get_vertex() - end_vertex.get_vertex()
-    
-    def assign_solid(self,id):
-        self._solid = id
 
     def get_center(self):
         xyz_total=self._vertices[0].get_vertex()+self._vertices[1].get_vertex()+self._vertices[2].get_vertex()
