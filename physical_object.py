@@ -27,8 +27,15 @@ COLOR_MAP = {
 }
 
 class Vertex:
-
-    def __init__(self, point: np.ndarray, color: tuple):
+    """
+    Represents a point in 3d space with color data for that vertex. Color data enables smooth shading
+    """
+    def __init__(self, point: np.ndarray, color=COLOR_MAP["black"]: tuple):
+        """
+        Create the vertex with coordinates of point, and vertex data of color
+        :param point: an array of [x,y,z]
+        :param color: the vertex color, (R, G, B)
+        """
         self._x_coordinate = point[0]
         self._y_coordinate = point[1]
         self._z_coordinate = point[2]
@@ -41,6 +48,9 @@ class Vertex:
     def get_color(self):
         return self._color
 
+    def set_color(self, color):
+        self._color = color
+
     def get_color_from_barycentric_value(self, u):
         """
         Returns the adjusted color from this vertex given the relative distance from this point on a plane (u, v, or w from barycentric equations)
@@ -48,20 +58,35 @@ class Vertex:
         return self._color * u
 
 class Surface:
+    """
+    Represents the surface bounded by 3 vertices. A triangular polygon. Support for higher order polygons coming soon.
+    """
+    def __init__(self, vertex_0: np.ndarray, vertex_1: np.ndarray, vertex_2: np.ndarray, color=None):
+        """
+        Given 3 vertices, initialize the polygon. 
+        :param vertex_0: an ndarray for the first vertex
+        :param vertex_1: an ndarray for the second vertex
+        :param vertex_2: an ndarray for the third vertex
+        :param color: a tuple representing the color of the polygon. Overwrites the vertex data
+        """
+        self._vertices =np.array([vertex_0, vertex_1, vertex_2])
 
-    def __init__(self,*args):
-        self._vertices =[]
-        for arg in args:
-            self._vertices.append(arg)
-        self._vertices = np.array(self._vertices)
-        self._point_one = self._vertices[0].get_vertex()
-        point_one = self._vertices[0].get_vertex()
-        point_two = self._vertices[1].get_vertex()
-        point_three = self._vertices[2].get_vertex()
+        # Generate the edges of the polygon
+        self._AB = self.make_line_segment(vertex_0, vertex_1)
+        self._BC = self.make_line_segment(vertex_1, vertex_2)
+        self._CA = self.make_line_segment(vertex_2, vertex_0)
+        
         self._normal = self.calc_normal()
-        self._side_one = np.array([point_two[0]-point_one[0], point_two[1]-point_one[1], point_two[2]-point_one[2]])
-        self._side_two = np.array([point_three[0] - point_one[0], point_three[1] - point_one[1], point_three[2] - point_one[2]])
 
+        # If a color was passed then override the color data of the vertices
+        if color is not None:
+            for vertex in self._vertices:
+                vertex.set_color(color)
+
+
+    def make_line_segment(start_vertex, end_vertex):
+        return start_vertex.get_vertex() - end_vertex.get_vertex()
+    
     def assign_solid(self,id):
         self._solid = id
 
@@ -85,15 +110,7 @@ class Surface:
         return self._id
 
     def calc_normal(self):
-        point_one = self._vertices[0].get_vertex()
-        point_two = self._vertices[1].get_vertex()
-        point_three = self._vertices[2].get_vertex()
-        line_ab = np.array([point_two[0]-point_one[0], point_two[1]-point_one[1], point_two[2]-point_one[2]])
-        line_ac = np.array([point_three[0] - point_one[0], point_three[1] - point_one[1], point_three[2] - point_one[2]])
-        #normal_vector = (line_ab[1]*line_ac[2]-line_ab[2]*line_ac[1],
-        #                 line_ab[2]*line_ac[0]-line_ab[0]*line_ac[2],
-        #                 line_ab[0]*line_ac[1]-line_ab[1]*line_ac[0])
-        normal_vector = np.cross(line_ab,line_ac)
+        normal_vector = np.cross(self._CA, self._BC)
         return normal_vector
 
     def check_intersection(self,ray):
