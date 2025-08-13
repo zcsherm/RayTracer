@@ -36,21 +36,27 @@ class Vertex:
         :param point: an array of [x,y,z]
         :param color: the vertex color, (R, G, B)
         """
-        self._x_coordinate = point[0]
-        self._y_coordinate = point[1]
-        self._z_coordinate = point[2]
-        self._coordinates = point
-        self._color = color
+        self.set_coordinates(point)
+        self.set_color(color)
 
     def get_vertex(self):
         return self._coordinates
 
+    def get_coordinates(self):
+        return self._coordinates
+        
     def get_color(self):
         return self._color
 
     def set_color(self, color):
         self._color = color
 
+    def set_coordinates(point: np.ndarray):
+        self._x_coordinate = point[0]
+        self._y_coordinate = point[1]
+        self._z_coordinate = point[2]
+        self._coordinates = point
+        
     def get_color_from_barycentric_value(self, u):
         """
         Returns the adjusted color from this vertex given the relative distance from this point on a plane (u, v, or w from barycentric equations)
@@ -70,33 +76,44 @@ class Surface:
         :param color: a tuple representing the color of the polygon. Overwrites the vertex data
         """
         self._vertices =np.array([vertex_0, vertex_1, vertex_2])
-
+        self._v0 = vertex_0.get_coordinates()
+        
         # Generate the edges of the polygon
         self._AB = self.make_line_segment(vertex_0, vertex_1)
         self._BC = self.make_line_segment(vertex_1, vertex_2)
         self._CA = self.make_line_segment(vertex_2, vertex_0)
-        
+
+        # Center, normal, and constant can change on rotation and translation
+        self._center = self.get_center()
         self._normal = self.calc_normal()
 
         # If a color was passed then override the color data of the vertices
         if color is not None:
-            for vertex in self._vertices:
-                vertex.set_color(color)
+            self.set_color(color)
+        else:
+            self._color = None
 
-
+        # make an ID
+        # Assign to a solid?
+    
     def make_line_segment(start_vertex, end_vertex):
         return start_vertex.get_vertex() - end_vertex.get_vertex()
 
     def get_center(self):
-        xyz_total=self._vertices[0].get_vertex()+self._vertices[1].get_vertex()+self._vertices[2].get_vertex()
-        xyz_total = np.divide(xyz_total,3)
-        return xyz_total
+        coordinate_sum = np.array([0,0,0])
+        for vertex in self._vertices:
+            coordinate_sum += vertex.get_coordinates()
+        center = np.divide(coordinate_dum, len(self._vertices)
+        return center
 
-    def set_color(self,color):
-        if COLOR_MAP[color]:
-            color = np.array(COLOR_MAP[color],dtype=np.uint8)
-        self._color=color
-
+    def set_vertices_color(self, color):
+        for vertex in self._vertices:
+            vertex.set_color(color)
+    
+    def set_color(self, color):
+        self._color = color
+        self.set_vertices_color(color)
+        
     def color(self):
         return self._color
 
@@ -108,8 +125,51 @@ class Surface:
 
     def calc_normal(self):
         normal_vector = np.cross(self._CA, self._BC)
-        return normal_vector
+        self._normal = normal_vector
 
+    def get_normal(self):
+        return self._normal
+
+    def get_new_normal(self):
+        self.calc_normal
+        return self.get_normal()
+
+    def normal(self):
+        """
+        Alias for get_normal
+        """
+        return self.get_normal()
+
+    def get_equation(self):
+        self._equation = f"{self._normal[0]}X + {self._normal[1]}Y + {self._normal[2]}Z = {self._d}"
+
+    def get_plane_constant(self):
+        """
+        Get the plane constant for the plane equation. Also referred to as d or D in the literature.
+        """
+        constant = np.dot(self._normal, self._v0)
+        self._plane_constant = constant
+        self._d = constant
+
+    def find_t(self, ray: Ray):
+        """
+        Get the distance along a ray to the intersection of the plane
+        """
+        # Check for orthogonal normal and direction, as the ray will not intersect
+        if -.2 < np.dot(ray.direction(), self._normal) < .2:
+            return -1
+        t = (self._d - np.dot(self._normal, ray.origin())) / np.dot(self._normal, ray.direction())
+        return t
+
+    def get_intersection_point(self, ray: Ray):
+        """
+        Gets the point of intersection between a plane and a ray
+        """
+        t = self.find_t(ray)
+        intersection = ray.get_point(t)
+        return intersection
+
+    def check_point_in_surface(self, point: np.ndarray):
     def check_intersection(self,ray):
         #h = self.calc_h(ray)
         h = np.cross(ray.direction(), self._side_two)
