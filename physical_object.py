@@ -3,7 +3,9 @@
 import space
 from ray import Ray
 import numpy as np
+from utilities import *
 
+# Move to another file, constants
 COLOR_MAP = {
     "black": (0, 0, 0),
     "white": (255, 255, 255),
@@ -78,6 +80,7 @@ class Surface:
         self._vertices =np.array([vertex_0, vertex_1, vertex_2])
         self._v0 = vertex_0.get_coordinates()
         
+        
         # Generate the edges of the polygon
         self._AB = self.make_line_segment(vertex_0, vertex_1)
         self._BC = self.make_line_segment(vertex_1, vertex_2)
@@ -86,7 +89,8 @@ class Surface:
         # Center, normal, and constant can change on rotation and translation
         self._center = self.get_center()
         self._normal = self.calc_normal()
-
+        self._area = np.linalg.norm(self._normal) / 2 # Unless deformation or vertex manipulation is added, this should be constant
+        
         # If a color was passed then override the color data of the vertices
         if color is not None:
             self.set_color(color)
@@ -168,108 +172,73 @@ class Surface:
         t = self.find_t(ray)
         intersection = ray.get_point(t)
         return intersection
-
-    def check_point_in_surface(self, point: np.ndarray):
-    def check_intersection(self,ray):
-        #h = self.calc_h(ray)
-        h = np.cross(ray.direction(), self._side_two)
-        #a = self._side_one[0]*h[0]+self._side_one[1]*h[1]+self._side_one[2]*h[2]  # The determinant
-        a = np.dot(self._side_one,h)
-        if a == 0:
-            return False
-        o = ray.origin()
-        vertex_0 = self._vertices[0].get_vertex()
-        #s = (o[0]-vertex_0[0],o[1]-vertex_0[1],o[2]-vertex_0[2])
-        s = o-vertex_0
-        d = ray.direction()
-        cp = np.cross(s, self._side_one)
-        #u = self.calc_u(h,a,s)
-        u = np.dot(s,h)/a
-        if u > 1 or u < 0:
-            return False
-        #v = self.calc_v(d,a,s)
-        v = np.dot(d,cp)/a
-        if v > 1 or v < 0 or u+v > 1:
-            return False
-        #t = self.calc_t(a,s)
-        t = np.dot(self._side_two, cp) / a
-        point = ray.get_point(t)
-        return t,point
-
-    def calc_h(self,ray):
-        """
-        Gives the cross product of the direction and the second edge of the vertex
-        :param ray:
-        :return:
-        """
-        direction = ray.direction()
-        #h = cross_product(direction,self._side_two)
-        return np.cross(direction,self._side_two)
-
-    def calc_u(self,h,a,s):
-        """
-        Calculates the U value for an intersection. must be between 0 and 1 inclusive, to intersect
-        :param ray:
-        :return:
-        """
-        #u = (s[0]*h[0]+s[1]*h[1]+s[2]*h[2])/a
-        u = np.dot(s,h)/a
-        return u
-
-    def calc_v(self,d,a,s):
-        """
-        Calculates the v value for an intersection must be between 0 and 1, and u+v must be 0-1
-        :param ray:
-        :return:
-        """
-        #cp = cross_product(s,self._side_one)
-        cp = np.cross(s,self._side_one)
-        #v = (d[0]*cp[0]+d[1]*cp[1]+d[2]*cp[2])/a
-        v = np.dot(d,cp)/a
-        return v
-
-    def calc_t(self,a,s):
-        """
-        Calculates t which is how far along the ray the object is.
-        :param ray:
-        :return:
-        """
-        #cp = cross_product(s,self._side_one)
-        cp = np.cross(s,self._side_one)
-        d = self._side_two
-        #t = (d[0]*cp[0]+d[1]*cp[1]+d[2]*cp[2])/a
-        t = np.dot(d,cp)/a
-        return t
-
-    def check_parallel(self,vector):
-        #dot_product = self._normal[0]*vector[0] + self._normal[1]*vector[1] + self._normal[2]*vector[2]
-        #if dot_product == 0:
-        dot = np.dot(self._normal,vector)
-        if -.1<dot and dot<.1:
+    
+    def check_point_in_surface(self, u, v, w):
+        if .99 < u + v + w < 1.01 and (0,0,0) <= (u, v, w) <= (1, 1, 1)):
             return True
         return False
+        
+    def get_barycentric_coefficients(self, point):
+        u = self.get_u(point)
+        v = self.get_v(point)
+        w = self.get_w(point)
+        return u, v, w
 
+    def check_if_ray_intersects_surface(self, ray: Ray):
+        plane_intercept = self.get_intersection_point(ray)
+        u, v, w = self.get_barycentric_coefficients(plane_intercept)
+        if self.check_point_in_surface(u, v, w):
+            return self.get_color_at_point(u, v, w)
+        else:
+            return False
 
+    def get_color_at_point(self, u, v, w):
+        c1 = np.array(self._vertices[0].get_color_from_barycentric_value(u))
+        c2 = np.array(self._vertices[0].get_color_from_barycentric_value(v))
+        c3 = np.array(self._vertices[0].get_color_from_barycentric_value(w))
+        color = c1 + c2 + c3
+        return tuple(color)
+        
+    def get_u(self, point: np.ndarray):
+        # The sign of the cross product shouldn't matter, since we wind in the same order as the normal
+        radial = self._vertices[0].get_coordinates() - point
+        normal = np.dot(radial, self._AB)
+        return normal / (2 * self._area)
+
+    def get_v(self, point):
+        radial = self._vertices[1].get_coordinates() - point
+        normal = np.dot(radial, self._BC)
+        return normal / (2 * self._area)
+
+    def get_u(self, point):
+        radial = self._vertices[2].get_coordinates() - point
+        normal = np.dot(radial, self._CA)
+        return normal / (2 * self._area)
+        
 class Solid:
     # represents a set of surfaces that make up an object
     def __init__(self,id,*args):
         self.set_id(id)
         self._origin = np.array([0,0,0])
         self._surfaces = []
+        self._rotation = IDENTITY
         for arg in args:
             self.add_surface(arg)
-        self.center_of_mass()
+        self.get_center_of_mass()
 
     def add_surface(self,surface):
         self._surfaces.append(surface)
         surface.assign_solid(self._id)
 
     def center_of_mass(self):
+        """
+        I don't think I technically need to use this
+        """
         center = self._origin
         for surface in self._surfaces:
             center= np.add(center,surface.get_center())
         center /= len(self._surfaces)
-        self._origin = center
+        self._center = center
         print(f"This is my center {center}")
 
     def get_surfaces(self):
