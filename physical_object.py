@@ -90,6 +90,7 @@ class Surface:
         self._center = self.get_center()
         self._normal = self.calc_normal()
         self._area = np.linalg.norm(self._normal) / 2 # Unless deformation or vertex manipulation is added, this should be constant
+        self._solid = None
         
         # If a color was passed then override the color data of the vertices
         if color is not None:
@@ -155,6 +156,14 @@ class Surface:
         self._plane_constant = constant
         self._d = constant
 
+    def backface_check(self, ray: Ray):
+        """
+        Determine if the surface is pointing the right direction to be seen. Not yet implemented. Perhaps have a toggle for each surface as to whether or not it can be seen from both sides?
+        """
+        if np.dot(ray.direction(), self._normal) < 0:
+            return True
+        return False
+        
     def find_t(self, ray: Ray):
         """
         Get the distance along a ray to the intersection of the plane
@@ -214,33 +223,56 @@ class Surface:
         radial = self._vertices[2].get_coordinates() - point
         normal = np.dot(radial, self._CA)
         return normal / (2 * self._area)
+
+    def assign_solid(self, id):
+        self._solid = id
         
 class Solid:
-    # represents a set of surfaces that make up an object
+    """
+    Holds a set of surfaces that make up a rigid body. Allows translation and rotation of all vertices and surfaces uniformly about a point
+    """
     def __init__(self,id,*args):
+        """
+        Instantiate a solid with a set id and a number of surfaces.
+        :param id: The unique id of the solid
+        :param args: All of the surfaces to initially assign to the solid
+        """
         self.set_id(id)
         self._origin = np.array([0,0,0])
-        self._surfaces = []
+
+        # Set the translation and rotation transforms
+        self._translation = np.array([0, 0, 0])
         self._rotation = IDENTITY
+
+        # Assign all of the passed surfaces and get the center of mass        
+        self._surfaces = np.array([])
         for arg in args:
             self.add_surface(arg)
-        self.get_center_of_mass()
-
+        
     def add_surface(self,surface):
-        self._surfaces.append(surface)
+        """
+        Adds a new surface to the solid and recalculates the center of mass.
+        """
+        np.append(self._surfaces, surface)
         surface.assign_solid(self._id)
-
-    def center_of_mass(self):
+        self.get_center_of_mass()
+    
+    def get_center_of_mass(self):
         """
-
+        Calculates the center of mass of the solid. This point is the default axis of rotation.
         """
-        center = self._origin
-        for surface in self._surfaces:
-            center= np.add(center,surface.get_center())
-        center /= len(self._surfaces)
+        #center = np.array([0, 0, 0])
+        #np.sum(self._surfaces, axis=0) # I believe this will add the vectors appropriately
+        #for surface in self._surfaces:
+        #    center= np.add(center, surface.get_center())
+        #center /= len(self._surfaces)
+        center = np.mean(self._surfaces, axis=0) # should find the average point in the solid
         self._center = center
         print(f"This is my center {center}")
 
+    def center_of_mass(self):
+        return self._center
+        
     def get_surfaces(self):
         return self._surfaces
 
@@ -250,12 +282,32 @@ class Solid:
     def id(self):
         return self._id
 
-    def translate(self,x,y,z):
-        move = np.array([x,y,z])
-        self._origin += move
-
-    def rotate(self,yaw,pitch,roll):
+    def translate(self, x, y, z):
+        movement = np.array([x, y, z])
+        
+    def translate_vector(self, movement: np.ndarray):
+        np.add(self._translation, movement)
+        
+    def rotate(self, yaw, pitch, roll):
         pass
+
+    def __getattr__(self, name):
+        """
+        Alias get methods as attributes of the object. Prevent reassignment of private attributes.
+        """
+        if name == "COM":
+            return self.center_of_mass()
+        if name == "com":
+            return self.center_of_mass()
+        if name == "surfaces":
+            return self.get_surfaces()
+        if name == "id":
+            return self.id()
+        if name == 'rotation':
+            return self.get_rotation_matrix()
+        if name == "translation":
+            return self.get_translation_vector()
+        raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")
 
 def cross_product(v1,v2):
     cp =            (v1[1] * v2[2] - v1[2] * v2[1],
