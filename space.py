@@ -22,7 +22,7 @@ class Space:
         self.set_boundaries()
 
     def set_boundaries(self):
-        # Get a vertex at each corner of space
+        # Get a vertex at each corner of space -> Change to a loop
         v1 = physical_object.Vertex(self._x_max,self._y_max,self._z_min)
         v2 = physical_object.Vertex(self._x_max,self._y_min,self._z_min)
         v3 = physical_object.Vertex(self._x_min,self._y_max,self._z_min)

@@ -32,7 +32,7 @@ class Vertex:
     """
     Represents a point in 3d space with color data for that vertex. Color data enables smooth shading
     """
-    def __init__(self, point: np.ndarray, color=COLOR_MAP["black"]: tuple):
+    def __init__(self, point: np.ndarray, color=COLOR_MAP["black"]):
         """
         Create the vertex with coordinates of point, and vertex data of color
         :param point: an array of [x,y,z]
@@ -46,14 +46,14 @@ class Vertex:
 
     def get_coordinates(self):
         return self._coordinates
-        
+    #def get_world_coordinates(self,):
     def get_color(self):
         return self._color
 
     def set_color(self, color):
         self._color = color
 
-    def set_coordinates(point: np.ndarray):
+    def set_coordinates(self, point: np.ndarray):
         self._x_coordinate = point[0]
         self._y_coordinate = point[1]
         self._z_coordinate = point[2]
@@ -107,7 +107,7 @@ class Surface:
         coordinate_sum = np.array([0,0,0])
         for vertex in self._vertices:
             coordinate_sum += vertex.get_coordinates()
-        center = np.divide(coordinate_dum, len(self._vertices)
+        center = np.divide(coordinate_sum, len(self._vertices))
         return center
 
     def set_vertices_color(self, color):
@@ -174,7 +174,7 @@ class Surface:
         return intersection
     
     def check_point_in_surface(self, u, v, w):
-        if .99 < u + v + w < 1.01 and (0,0,0) <= (u, v, w) <= (1, 1, 1)):
+        if .99 < u + v + w < 1.01 and (0,0,0) <= (u, v, w) <= (1, 1, 1):
             return True
         return False
         
@@ -232,7 +232,7 @@ class Solid:
 
     def center_of_mass(self):
         """
-        I don't think I technically need to use this
+
         """
         center = self._origin
         for surface in self._surfaces:
