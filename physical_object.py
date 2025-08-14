@@ -241,9 +241,9 @@ class Solid:
         self._origin = np.array([0,0,0])
 
         # Set the translation and rotation transforms
-        self._translation = np.array([0, 0, 0])
-        self._rotation = IDENTITY
-
+        #self._translation = np.array([0, 0, 0])
+        #self._rotation = IDENTITY
+        self._transform = IDENTITY
         # Assign all of the passed surfaces and get the center of mass        
         self._surfaces = np.array([])
         for arg in args:
@@ -282,14 +282,22 @@ class Solid:
     def id(self):
         return self._id
 
-    def translate(self, x, y, z):
-        movement = np.array([x, y, z])
+    def get_transform(self):
+        return self._transform
         
-    def translate_vector(self, movement: np.ndarray):
-        np.add(self._translation, movement)
-        
-    def rotate(self, yaw, pitch, roll):
-        pass
+    def update_transform(self, translate: np.ndarray,  axis=self._center, yaw_pitch_roll: np.ndarray):
+        self._transform = get_transform(translate, axis, yaw_pitch_roll)
+
+    def transform_vertex(self, vertex_coords: np.ndarray):
+        """
+        Transforms a vertexes coordinates by the transformation matrix, gives the true position of the vertex in space.
+        :param vertex_coords: a 1x3 vector containing the xyz of a vertex.
+        :return: a 1x3 array containing the true xyz of a vertex.
+        """
+        return world_coordinates(vertex_coords, self._transform)
+
+    def get_world_coords(self):
+        return self.transform_vertex(self._center)
 
     def __getattr__(self, name):
         """
@@ -303,9 +311,9 @@ class Solid:
             return self.get_surfaces()
         if name == "id":
             return self.id()
-        if name == 'rotation':
-            return self.get_rotation_matrix()
-        if name == "translation":
+        if name == 'transform':
+            return self.get_transform()
+        if name == "xyz":
             return self.get_translation_vector()
         raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")
 
