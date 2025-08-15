@@ -8,43 +8,73 @@ from renderer import *
 import timeit
 from utilities import *
 
-VECTOR = np.array([.3,.22,.262])
+VECTOR = np.array([.3],[.22],[.262])
+
 class Camera:
 
     def __init__(self):
+        """
+        Setup the cameras 4 borders, the origin, and transformation matrix
+        """
         self._origin = np.array([0,0,0])
         self.set_viewport_borders
         self._transform = IDENTITY
         self.reset_movement()
 
     def set_viewport_borders(self):
-        self._d1 = VECTOR
-        self._d2 = np.dot(INVERT_Y, VECTOR)
-        self._d3 = np.dot(INVERT_X, self._d2)
-        self._d4 = np.dot(INVERT_X, VECTOR)
+        """
+        Generate the 4 boundary vectors of the frustum. Change them into xyz coords
+        """
+        self._d1 = VECTOR.flatten()
+        self._d2 = np.dot(INVERT_Y, VECTOR).flatten()
+        self._d3 = np.dot(INVERT_X, self._d2).flatten()
+        self._d4 = np.dot(INVERT_X, VECTOR).flatten()
         
     def update_transform(translate: np.ndarray, yaw_pitch_roll: np.ndarray):
+        """
+        Given a a translation and rotation, find the new compound transformation matrix.
+        :param translate: The amount the object has moved/translated
+        :param yaw_pitch_roll: the amount the object has rotated about its axes
+        """
         self._transform = apply_transform(translate, self._origin, yaw_pitch_roll, self._transform)
 
     def get_translate_viewport(self, x=0, y=0, z=0):
+        """
+        Changes individual position changes into a 1x3 array
+        """
         return np.array([x, y, z])
 
     def get_rotations(self, yaw=0, pitch=0, roll=0):
-        return np.array(yaw, pitch, roll)
+        """
+        Changes individual rotations into a 1x3 array
+        """
+        return np.array([yaw, pitch, roll])
 
     def new_transform(self):
+        """
+        Updates the current transformation matrix and resets accumulated translations and rotations. Call this before rendering.
+        """
         t = self._get_translate_viewport(self._x, self._y, self._z)
         r = self._get_rotations(self._yaw, self._pitch, self._roll)
         self.update_transform(t, r)
         self.reset_movement()
 
     def get_transform(self):
+        """
+        Get the transformation matrix
+        """
         return self._transform
 
     def transform_point(self, point: nd.array):
+        """
+        Changes a point or vector from local coordinates into its true xyz coordinate.
+        """
         return world_coordinates(point, self._transform)
         
     def reset_movement(self):
+        """
+        Resets accumulated movement and rotation back to 0. Called after every new transform is used. Can track movement between frames
+        """
         self._x = 0
         self._y = 0
         self._z = 0
