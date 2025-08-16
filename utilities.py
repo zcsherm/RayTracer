@@ -83,7 +83,7 @@ def get_transform(translate: np.ndarray, axis: np.ndarray, yaw_pitch_roll: np.nd
     Tp_b = np.dot(T, np.subtract(IDENTITY, p))
     return np.dot(Tp, np.dot(R, Tp_b))
 
-def apply_transform(translate: np.ndarray, axis, np.ndarray, yaw_pitch_roll: np.ndarray, current_matrix: np.ndarray):
+def apply_transform(translate: np.ndarray, axis: np.ndarray, yaw_pitch_roll: np.ndarray, current_matrix: np.ndarray):
     """
     Applies a new transformation to an existing transformation
     :return: a 4x4 matrix given by M_new x M_old. Represents the cumulative changes to the solid.

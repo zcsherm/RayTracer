@@ -1,14 +1,12 @@
 
 import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 from ray import Ray
 from physical_object import *
 from renderer import *
 import timeit
 from utilities import *
 
-VECTOR = np.array([.3],[.22],[.262])
+VECTOR = np.array([[.3],[.22],[.262]])
 
 class Camera:
 
@@ -17,7 +15,7 @@ class Camera:
         Setup the cameras 4 borders, the origin, and transformation matrix
         """
         self._origin = np.array([0,0,0])
-        self.set_viewport_borders
+        self.set_viewport_borders()
         self._transform = IDENTITY
         self.reset_movement()
 
@@ -30,7 +28,7 @@ class Camera:
         self._d3 = np.dot(INVERT_X, self._d2).flatten()
         self._d4 = np.dot(INVERT_X, VECTOR).flatten()
         
-    def update_transform(translate: np.ndarray, yaw_pitch_roll: np.ndarray):
+    def update_transform(self, translate: np.ndarray, yaw_pitch_roll: np.ndarray):
         """
         Given a a translation and rotation, find the new compound transformation matrix.
         :param translate: The amount the object has moved/translated
@@ -54,8 +52,8 @@ class Camera:
         """
         Updates the current transformation matrix and resets accumulated translations and rotations. Call this before rendering.
         """
-        t = self._get_translate_viewport(self._x, self._y, self._z)
-        r = self._get_rotations(self._yaw, self._pitch, self._roll)
+        t = self.get_translate_viewport(self._x, self._y, self._z)
+        r = self.get_rotations(self._yaw, self._pitch, self._roll)
         self.update_transform(t, r)
         self.reset_movement()
 
@@ -65,7 +63,7 @@ class Camera:
         """
         return self._transform
 
-    def transform_point(self, point: nd.array):
+    def transform_point(self, point: np.ndarray):
         """
         Changes a point or vector from local coordinates into its true xyz coordinate.
         """
@@ -82,12 +80,12 @@ class Camera:
         self._pitch = 0
         self._roll = 0
 
-    def add_movement(x=0, y=0, z=0):
+    def add_movement(self, x=0, y=0, z=0):
         self._x += x
         self._y += y
         self._z += z
 
-    def add_rotation(yaw=0, pitch=0, roll=0):
+    def add_rotation(self, yaw=0, pitch=0, roll=0):
         self._yaw += np.radians(yaw)
         self._pitch += np.radians(pitch)
         self._roll += np.radians(roll)

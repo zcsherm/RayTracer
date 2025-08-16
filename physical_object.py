@@ -46,7 +46,7 @@ class Vertex:
 
     def get_coordinates(self):
         return self._coordinates
-    #def get_world_coordinates(self,):
+
     def get_color(self):
         return self._color
 
@@ -69,7 +69,7 @@ class Surface:
     """
     Represents the surface bounded by 3 vertices. A triangular polygon. Support for higher order polygons coming soon.
     """
-    def __init__(self, vertex_0: np.ndarray, vertex_1: np.ndarray, vertex_2: np.ndarray, color=None):
+    def __init__(self, vertex_0: Vertex, vertex_1: Vertex, vertex_2: Vertex, color=None):
         """
         Given 3 vertices, initialize the polygon. 
         :param vertex_0: an ndarray for the first vertex
@@ -79,6 +79,8 @@ class Surface:
         """
         self._vertices =np.array([vertex_0, vertex_1, vertex_2])
         self._v0 = vertex_0.get_coordinates()
+        self._v1 = vertex_1.get_coordinates()
+        self._v2 = vertex_2.get_coordinates()
         
         
         # Generate the edges of the polygon
@@ -98,10 +100,11 @@ class Surface:
         else:
             self._color = None
 
+        # Method to add vertex
         # make an ID
         # Assign to a solid?
     
-    def make_line_segment(start_vertex, end_vertex):
+    def make_line_segment(self, start_vertex, end_vertex):
         return start_vertex.get_vertex() - end_vertex.get_vertex()
 
     def get_center(self):
@@ -129,6 +132,7 @@ class Surface:
         return self._id
 
     def calc_normal(self):
+        # I'm thinking that the normal doesn't need to be recalced, since it's based on local coordinates. Instead, Transform it
         normal_vector = np.cross(self._CA, self._BC)
         self._normal = normal_vector
 
@@ -136,7 +140,7 @@ class Surface:
         return self._normal
 
     def get_new_normal(self):
-        self.calc_normal
+        self.calc_normal()
         return self.get_normal()
 
     def normal(self):
@@ -179,6 +183,8 @@ class Surface:
         Gets the point of intersection between a plane and a ray
         """
         t = self.find_t(ray)
+        if t<0:
+            return False
         intersection = ray.get_point(t)
         return intersection
     
@@ -195,6 +201,8 @@ class Surface:
 
     def check_if_ray_intersects_surface(self, ray: Ray):
         plane_intercept = self.get_intersection_point(ray)
+        if plane_intercept is False:
+            return False
         u, v, w = self.get_barycentric_coefficients(plane_intercept)
         if self.check_point_in_surface(u, v, w):
             return self.get_color_at_point(u, v, w)
@@ -219,7 +227,7 @@ class Surface:
         normal = np.dot(radial, self._BC)
         return normal / (2 * self._area)
 
-    def get_u(self, point):
+    def get_w(self, point):
         radial = self._vertices[2].get_coordinates() - point
         normal = np.dot(radial, self._CA)
         return normal / (2 * self._area)
@@ -284,9 +292,15 @@ class Solid:
 
     def get_transform(self):
         return self._transform
-        
-    def update_transform(self, translate: np.ndarray,  axis=self._center, yaw_pitch_roll: np.ndarray):
-        self._transform = get_transform(translate, axis, yaw_pitch_roll)
+
+    def translate(self, x=0, y=0, z=0):
+        pass
+
+    def rotate(self, yaw=0, pitch=0, z=0):
+        pass
+
+    def update_transform(self, translate: np.ndarray, yaw_pitch_roll: np.ndarray, axis=None):
+        self._transform = apply_transform(translate, axis, yaw_pitch_roll, self._transform)
 
     def transform_vertex(self, vertex_coords: np.ndarray):
         """
