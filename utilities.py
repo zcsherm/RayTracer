@@ -7,6 +7,12 @@ IDENTITY = np.array([
     [0, 0, 0, 1]
 ])
 
+IDENTITY_3 = np.array([
+    [1, 0, 0],
+    [0, 1, 0],
+    [0, 0, 1]
+])
+
 INVERT_X = np.array([
     [-1, 0, 0],
     [0, 1, 0],
