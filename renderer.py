@@ -30,13 +30,8 @@ class Renderer:
         self._img.put(color, (x, y+1))
         self._img.put(color, (x+1, y+1))
 
-    def add_surface(self,surface):
-        self._space.add_object(surface)
-
-    def add_solid(self,solid):
-        for s in solid.get_surfaces():
-            print(s)
-            self.add_surface(s)
+    def add_object(self, object):
+        self._space.add_object(object)
 
     def create_window(self):
         self._root = tk.Tk()
@@ -54,40 +49,10 @@ class Renderer:
         self._camera.change_angle(pitch=random.randint(-10,10))
         self._camera.move_origin(0.3,.1,0)
         self._camera.print_data()
-        print(self._camera.get_heading())
-        #self._canvas.create_rectangle(0,0,self._width,self._height,fill='white')
+
         # Create a list of rays that were generated
-        rays,origins = self._camera.generate_rays_vectorized(self._width//2,self._height//2)
+        rays = self._camera.generate_rays(self._width//2,self._height//2)
         self.render_screen_vectorized(rays,origins)
-        # How many rays were made
-        counter = 0
-        #self.render_screen(rays)
-#        for ray in rays:
-            # Every height pixels, we go to the next column
-#            pixel_x = counter // self._height
-            #pixel_y = self._height - counter % self._height
-#            pixel_y = counter % self._height
-            # Reset the appearance of the canvas
-#           self.color_pixel(pixel_x,pixel_y,'white')
-#            surfaces = list(self._space.surfaces().values())
-            # This helps us decide which to render, only the one with the lowest t value
-#            min_t = 999999999
-
-#            for surface in surfaces:
-#                result = surface.check_intersection(ray)
-#                if result:
-#                    if result[0]<min_t and result[0]>0:
-#                        min_t = result[0]
-#                        color = surface.color()
-#                        if color == 'green':
-#                            #print(ray.direction())
-#                            #print(pixel_x,pixel_y)
-#                            pass
-#                        self.color_pixel(pixel_x,pixel_y,color)
-
-            #self.color_pixel(rays[0],rays[1],rays[2])
-
-#            counter += 1
         self._root.after(UPDATE, self.update)
 
     def intersect_rays_surfaces(self,ray_origins, ray_directions, vertices, side_one, side_two):
@@ -139,9 +104,22 @@ class Renderer:
         return t  # Shape: (N, M) where N = rays, M = surfaces
 
 
+    def render_screen(self, rays):
+        start = time.time()
+        objects = self._space.objects()
+        t = None
+        surface = None
+        for x in rays:
+            for y in x:
+        # For every solid, check if any of its surfaces intersect with the ray
+                for object in objects:
+                    solid = self._space.get_object(object)
+                    for surface in solid.get_surfaces():
+                        if surface.get_intersection_point(y)
+                
     def render_screen_vectorized(self,rays,origins):
         start = time.time()
-        vertices, edge_ones, edge_twos, colors = self._space.surfaces_2()
+        objects = self._space.objects()
         t = self.intersect_rays_surfaces(origins,rays,vertices,edge_ones,edge_twos)
         closest_t = np.min(np.where(t > 0, t, np.inf), axis=1)
         print(closest_t.shape)
