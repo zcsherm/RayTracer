@@ -81,11 +81,17 @@ class Camera:
         self._roll = 0
 
     def add_movement(self, x=0, y=0, z=0):
+        """
+        Adds an accumulation of movement to the camera in a given direction. This will be used in the transformation when rendered.
+        """
         self._x += x
         self._y += y
         self._z += z
 
     def add_rotation(self, yaw=0, pitch=0, roll=0):
+        """
+        Adds accumulation of rotation to the camera along a given axis. Wwill be used when the transformation is rendered. Units must be degrees
+        """
         self._yaw += np.radians(yaw)
         self._pitch += np.radians(pitch)
         self._roll += np.radians(roll)
