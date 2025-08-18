@@ -19,6 +19,11 @@ INVERT_Y = np.array([
     [0, 0, 1]
 ])
 
+INVERT_Z = np.array([
+    [1, 0, 0],
+    [0, 1, 0],
+    [0, 0, -1]
+])
 YAW = lambda yaw: np.array([
     [np.cos(yaw), 0, np.sin(yaw), 0],
     [0, 1, 0, 0],
