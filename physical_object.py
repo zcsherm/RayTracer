@@ -78,6 +78,7 @@ class Surface:
         :param color: a tuple representing the color of the polygon. Overwrites the vertex data
         """
         self._vertices =np.array([vertex_0, vertex_1, vertex_2])
+        # The vertices and the edges need to be transformed before each render.
         self._v0 = vertex_0.get_coordinates()
         self._v1 = vertex_1.get_coordinates()
         self._v2 = vertex_2.get_coordinates()
@@ -91,6 +92,7 @@ class Surface:
         # Center, normal, and constant can change on rotation and translation
         self._center = self.get_center()
         self._normal = self.calc_normal()
+        self._true_normal = self._normal
         self._area = np.linalg.norm(self._normal) / 2 # Unless deformation or vertex manipulation is added, this should be constant
         self._solid = None
         
@@ -127,18 +129,24 @@ class Surface:
 
     def set_id(self,id):
         self._id = id
-
+    
     def id(self):
         return self._id
 
     def calc_normal(self):
         # I'm thinking that the normal doesn't need to be recalced, since it's based on local coordinates. Instead, Transform it
         normal_vector = np.cross(self._CA, self._BC)
+        if self._solid is not None:
+            # Make sure to transform the normal as well
+            normal_vector = self._solid.transform_vertex(self._normal)
         self._normal = normal_vector
 
     def get_normal(self):
         return self._normal
 
+    def set_true_normal(self, normal):
+        self._true_normal = normal
+        
     def get_new_normal(self):
         self.calc_normal()
         return self.get_normal()
@@ -156,10 +164,14 @@ class Surface:
         """
         Get the plane constant for the plane equation. Also referred to as d or D in the literature.
         """
-        constant = np.dot(self._normal, self._v0)
+        v = self._v0
+        # Transform the source vertex to get its world position
+        if self._solid is not None:
+            v = self._solid.transform_vertex(v)
+        constant = np.dot(self._normal, v)
         self._plane_constant = constant
         self._d = constant
-
+    
     def backface_check(self, ray: Ray):
         """
         Determine if the surface is pointing the right direction to be seen. Not yet implemented. Perhaps have a toggle for each surface as to whether or not it can be seen from both sides?
@@ -173,6 +185,8 @@ class Surface:
         Get the distance along a ray to the intersection of the plane
         """
         # Check for orthogonal normal and direction, as the ray will not intersect
+        self.calc_normal()
+        self.get_plane_constant()
         if -.2 < np.dot(ray.direction(), self._normal) < .2:
             return -1
         t = (self._d - np.dot(self._normal, ray.origin())) / np.dot(self._normal, ray.direction())
@@ -194,6 +208,7 @@ class Surface:
         return False
         
     def get_barycentric_coefficients(self, point):
+        # I believe all of these need the transformed vertex and edges.
         u = self.get_u(point)
         v = self.get_v(point)
         w = self.get_w(point)
@@ -312,7 +327,7 @@ class Solid:
 
     def get_world_coords(self):
         return self.transform_vertex(self._center)
-
+        
     def __getattr__(self, name):
         """
         Alias get methods as attributes of the object. Prevent reassignment of private attributes.
