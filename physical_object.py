@@ -191,12 +191,13 @@ class Surface:
             return -1
         t = (self._d - np.dot(self._normal, ray.origin())) / np.dot(self._normal, ray.direction())
         return t
-
-    def get_intersection_point(self, ray: Ray):
+ 
+    def get_intersection_point(self, ray: Ray, t = None):
         """
         Gets the point of intersection between a plane and a ray
         """
-        t = self.find_t(ray)
+        if t is None:
+            t = self.find_t(ray)
         if t<0:
             return False
         intersection = ray.get_point(t)
@@ -214,8 +215,8 @@ class Surface:
         w = self.get_w(point)
         return u, v, w
 
-    def check_if_ray_intersects_surface(self, ray: Ray):
-        plane_intercept = self.get_intersection_point(ray)
+    def check_if_ray_intersects_surface(self, ray: Ray, t = None):
+        plane_intercept = self.get_intersection_point(ray, t)
         if plane_intercept is False:
             return False
         u, v, w = self.get_barycentric_coefficients(plane_intercept)
