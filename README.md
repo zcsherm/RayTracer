@@ -13,6 +13,8 @@ My goal with this project was to try to logic my way through the graphic renderi
 ### What I'd like to add
 
 * Instead of recalculating the normal and plane constant for every object, instead transform the ray by the inverse transformation matrix. This should allow for intersection checking at a much lower cost
+* Add scale to objects (need to adjust all references to local coordinates)
+* Add lens options, FOV adjustment
 * Save every rendered image and stitch it together as a gif or video
 * Wireframe mode
 * Lighting
