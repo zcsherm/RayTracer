@@ -103,6 +103,45 @@ class Renderer:
 
         return t  # Shape: (N, M) where N = rays, M = surfaces
 
+    def fill_image(self):
+        objects = np.array(self._space.objects().keys()).T
+        rays = self._camera.generate_rays(self._width//2, self._height//2)
+        
+    def get_t_and_color_for_ray(self, rays, objects):
+        func = np.vectorize(self.get_t_and_color_for_objects)
+        return func(objects, rays)
+
+    def get_closest_intersection_color(self, matrix):
+        t_values = matrix[..., 0].astype(float)
+        colors = matrix[..., 1]
+        color_mask = np.array([bool(c) for c in colors.ravel()].reshape(colors.shape)
+        masked_t_values = np.where(mask, values, np.inf)
+        # index = np.argmin(masked_t_values)
+        return matrix[np.unravel_index(masked_t_values.argmin(), t_values.shape)][1] # May need to change this. Unravel return tuple instead of list.
+        
+    def get_t_and_color_for_objects(self, objects, ray):
+        """
+        returns an m x n array for m objects with n surfaces
+        """
+        objects = np.array(self._space.objects().keys()).T
+        func = np.vectorize(self.get_t_and_color_for_solid)
+        return func(objects, ray)
+        
+    def get_t_and_color_for_solid(self, solid, ray):
+        """
+        Returns a 1xn array with each cell containing the t value and color for a given surface
+        """
+        surfaces = solid.get_surfaces()
+        func = np.vectorize(self.get_t_and_color)
+        return func(surfaces, ray)
+        
+    def get_t_and_color(self, surface, ray):
+        """
+        Returns the t value for a given surface and the color if a ray intersects it
+        """
+        t = surface.find_t(ray)
+        color = surface.check_if_ray_intersects_surface(ray, t)
+        return (t, color)
 
     def get_pixel_colors(self, rays):
         # REFACTOR
