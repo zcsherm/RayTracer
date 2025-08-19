@@ -63,7 +63,7 @@ class Space:
     def object_list(self):
         return list(self._objects.keys())
 
-    def object_list(self, id):
+    def get_object(self, id):
         return self._objects[id]
                 
 def generate_id(length=10):
