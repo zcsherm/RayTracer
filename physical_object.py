@@ -63,7 +63,7 @@ class Vertex:
         """
         Returns the adjusted color from this vertex given the relative distance from this point on a plane (u, v, or w from barycentric equations)
         """
-        return self._color * u
+        return tuple(map(lambda x: int(x*u), self._color))
 
 class Surface:
     """
