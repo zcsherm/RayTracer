@@ -51,81 +51,54 @@ class Renderer:
         self._camera.print_data()
 
         # Create a list of rays that were generated
-        rays = self._camera.generate_rays(self._width//2,self._height//2)
-        self.render_screen_vectorized(rays,origins)
+        self.fill_image
         self._root.after(UPDATE, self.update)
 
-    def intersect_rays_surfaces(self,ray_origins, ray_directions, vertices, side_one, side_two):
-        """
-        Vectorized Möller–Trumbore algorithm for ray-triangle intersections.
-
-        :param ray_origins: (N, 3) array of ray origins
-        :param ray_directions: (N, 3) array of ray directions
-        :param vertices: (M, 3) array of triangle vertex 0 positions
-        :param side_one: (M, 3) array of triangle first edge vectors
-        :param side_two: (M, 3) array of triangle second edge vectors
-        :return: (N, M) array of intersection distances, -1 if no intersection
-        """
-
-        # Compute h = cross(ray_direction, side_two) for all rays and all surfaces
-        h = np.cross(ray_directions[:, None, :], side_two[None, :, :])  # Shape: (N, M, 3)
-
-        # Compute determinant a = dot(side_one, h)
-
-
-        #a = np.einsum('nij,mj->nm', h, side_one[None, :, :])  # Shape: (N, M)
-        a = np.einsum('nij,ij->ni', h, side_one)
-        # Filter out near-zero values (ray parallel to triangle)
-        parallel_mask = np.abs(a) < 1e-12
-        a[parallel_mask] = np.inf  # Avoid division by zero
-
-        # Compute s = ray_origin - vertex_0
-        s = ray_origins[:, None, :] - vertices[None, :, :]  # Shape: (N, M, 3)
-        #s = ray_origins-vertices
-        # Compute u = dot(s, h) / a
-
-        u = np.einsum('nij,nij->ni', h, s) / a  # Shape: (N, M)
-        u_mask = (u < 0) | (u > 1)
-
-        # Compute q = cross(s, side_one)
-        q = np.cross(s, side_one)  # Shape: (N, M, 3)
-
-        # Compute v = dot(ray_direction, q) / a
-        v = np.einsum('nij,nj->ni', q, ray_directions) / a  # Shape: (N, M)
-        v_mask = (v < 0) | (u + v > 1)
-
-        # Compute t = dot(side_two, q) / a (ray intersection distance)
-        #t = np.einsum('mij,mj->mi', q, side_two) / a  # Shape: (N, M)
-        t = np.sum(q * side_two[None, :, :], axis=2) / a
-        #t = np.einsum('mij,mij->mi', q, side_two[None, :, :]) / a
-        # Filter invalid intersections
-        t[(parallel_mask | u_mask | v_mask)] = -1
-
-        return t  # Shape: (N, M) where N = rays, M = surfaces
-
     def fill_image(self):
-        objects = np.array(self._space.objects().keys()).T
-        rays = self._camera.generate_rays(self._width//2, self._height//2)
+        image = np.empty(self.width, self.height)
+        rays = self._camera.generate_rays(self._width, self._height)
+        img = self.get_color_of_every_ray(rays)
+        img = Image.fromarray(img.astype(np.uint8)) # May need to rotate and flip or transpose first. Origin is top left, but width may be inverted
+        img = ImageTk.PhotoImage(image)
+        self._label.configure(image=img)
+        self._label.image = img
+    
+    def get_color_of_every_ray(self, rays):
+        """
+        Gets the color of every ray on the screen. returns a width x height matrix
+        """
+        objects = np.array(self._space.object_list())
+        func = np.vectorize(self.get_color_of_ray)
+        return func(rays, objects)
         
-    def get_t_and_color_for_ray(self, rays, objects):
-        func = np.vectorize(self.get_t_and_color_for_objects)
-        return func(objects, rays)
-
-    def get_closest_intersection_color(self, matrix):
-        t_values = matrix[..., 0].astype(float)
-        colors = matrix[..., 1]
-        color_mask = np.array([bool(c) for c in colors.ravel()].reshape(colors.shape)
-        masked_t_values = np.where(mask, values, np.inf)
-        # index = np.argmin(masked_t_values)
-        return matrix[np.unravel_index(masked_t_values.argmin(), t_values.shape)][1] # May need to change this. Unravel return tuple instead of list.
+    def get_color_of_ray(self, ray, objects):
+        """
+        Gets the color of the closest intersection for a ray. Returns a tuple of the form (r,g,b)
+        """
+        values = self.get_t_and_color_for_objects(objects, ray)
+        mask = np.array([bool(cell[1]) for cell in values])
+        new_values = values[mask]
+        index = np.argmin([cell[0] for cell in new_values])
+        return new_values[index][1]
         
     def get_t_and_color_for_objects(self, objects, ray):
         """
-        returns an m x n array for m objects with n surfaces
+        returns an 1 x m array for m objects. Each cell is (t, (r,g,b)).
         """
-        objects = np.array(self._space.objects().keys()).T
-        func = np.vectorize(self.get_t_and_color_for_solid)
+        func = np.vectorize(self.get_smallest_t_and_color_for_solid)
         return func(objects, ray)
+
+    def get_smallest_t_and_color_for_solid(self, solid, ray):
+        """
+        Gets the t value and color for every surface in the solid, then finds the color of the smallest t value which intersects a surface.
+        returns a tuple of the form (t, (r,g,b))
+        """
+        solid = self._space.get_object(solid)
+        values = self.get_t_and_color_for_solid(solid, ray)
+        mask = np.array([bool(cell[1]) for cell in values])
+        new_values = values[mask]
+        index = np.argmin([cell[0] for cell in new_values])
+        return new_values[index]
         
     def get_t_and_color_for_solid(self, solid, ray):
         """
