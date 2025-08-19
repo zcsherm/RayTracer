@@ -122,7 +122,7 @@ class Surface:
     
     def set_color(self, color):
         self._color = color
-        self.set_vertices_color(color)
+        # self.set_vertices_color(color) # No longer needed, surface color overrides other.
         
     def color(self):
         return self._color
@@ -221,7 +221,11 @@ class Surface:
             return False
         u, v, w = self.get_barycentric_coefficients(plane_intercept)
         if self.check_point_in_surface(u, v, w):
-            return self.get_color_at_point(u, v, w)
+            if self._color is not None:
+                color = self._color
+            else:
+                color = self.get_color_at_point(u, v, w)
+            return color
         else:
             return False
 
