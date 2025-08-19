@@ -104,19 +104,43 @@ class Renderer:
         return t  # Shape: (N, M) where N = rays, M = surfaces
 
 
-    def render_screen(self, rays):
+    def get_pixel_colors(self, rays):
+        # REFACTOR
         start = time.time()
         objects = self._space.objects()
-        t = None
-        surface = None
-        for x in rays:
-            for y in x:
-        # For every solid, check if any of its surfaces intersect with the ray
+        image = np.empty(self._width//2, self._height//2)
+        for x in range(self._width//2):
+            for y in range(self._height//2):
+                ray = rays[x][y]
+                t_min = None
+                color_min = None
+                # For every solid, check if any of its surfaces intersect with the ray
                 for object in objects:
                     solid = self._space.get_object(object)
                     for surface in solid.get_surfaces():
-                        if surface.get_intersection_point(y)
+                        t = surface.find_t(ray)
+                        color = surface.check_if_ray_intersects_surface(ray, t)
+                        if color is False:
+                            continue
+                        if t_min is None:
+                            t_min = t
+                            color_min = color
+                        else:
+                            if t < t_min:
+                                t_min = t
+                                color_min = color
                 
+                # Now get the color for that surface
+                image[x][y] = color_min
+        return image
+
+    def place_color_on_screen(self, colors: np.ndarray):
+        # I may need to transpose or rotate the color
+        image = Image.fromarray(colors.astype(np.uint8))
+        image = ImageTk.PhotoImage(image)
+        self._label.configure(image=image)
+        self._label.image = image
+        
     def render_screen_vectorized(self,rays,origins):
         start = time.time()
         objects = self._space.objects()
