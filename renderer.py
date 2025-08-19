@@ -36,15 +36,15 @@ class Renderer:
     def create_window(self):
         self._root = tk.Tk()
         self._root.title("Renderer")
-        self._root.geometry(f"{self._width//2}x{self._height//2}")  # Set window siz e
-        self._img = tk.PhotoImage(width=self._width//2, height=self._height//2)
+        self._root.geometry(f"{self._width}x{self._height}")  # Set window siz e
+        self._img = tk.PhotoImage(width=self._width, height=self._height)
         self._label = tk.Label(self._root, image=self._img)
         self._label.pack()
         self._root.after(1, self.update)
         self._root.mainloop()
 
     def update(self):
-        # change angle is called just for demo purposes, comment out
+        # change angle is called just for demo purposes, comment out for static camera
         self._camera.change_angle(yaw=random.randint(-10,10))
         self._camera.change_angle(pitch=random.randint(-10,10))
         self._camera.move_origin(0.3,.1,0)
