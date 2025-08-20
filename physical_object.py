@@ -1,6 +1,6 @@
 # Creates a class for a basic solid in space
 
-import space
+
 from ray import Ray
 import numpy as np
 from utilities import *
@@ -51,7 +51,10 @@ class Vertex:
         return self._color
 
     def set_color(self, color):
-        self._color = color
+        if isinstance(color, str):
+            self._color = COLOR_MAP[color]
+        else:
+            self._color = color
 
     def set_coordinates(self, point: np.ndarray):
         self._x_coordinate = point[0]
@@ -91,10 +94,11 @@ class Surface:
 
         # Center, normal, and constant can change on rotation and translation
         self._center = self.get_center()
-        self._normal = self.calc_normal()
+        self._solid = None
+        self.calc_normal()
         self._true_normal = self._normal
         self._area = np.linalg.norm(self._normal) / 2 # Unless deformation or vertex manipulation is added, this should be constant
-        self._solid = None
+
         
         # If a color was passed then override the color data of the vertices
         if color is not None:
@@ -110,18 +114,24 @@ class Surface:
         return start_vertex.get_vertex() - end_vertex.get_vertex()
 
     def get_center(self):
-        coordinate_sum = np.array([0,0,0])
+        coordinate_sum = np.array([0,0,0],dtype='float64')
         for vertex in self._vertices:
             coordinate_sum += vertex.get_coordinates()
         center = np.divide(coordinate_sum, len(self._vertices))
         return center
+
+    def center(self):
+        return self._center
 
     def set_vertices_color(self, color):
         for vertex in self._vertices:
             vertex.set_color(color)
     
     def set_color(self, color):
-        self._color = color
+        if isinstance(color, str):
+            self._color = COLOR_MAP[color]
+        else:
+            self._color = color
         # self.set_vertices_color(color) # No longer needed, surface color overrides other.
         
     def color(self):
@@ -135,14 +145,14 @@ class Surface:
 
     def calc_normal(self):
         # I'm thinking that the normal doesn't need to be recalced, since it's based on local coordinates. Instead, Transform it
-        normal_vector = np.cross(self._CA, self._BC)
+        normal_vector = np.cross(self._BC, self._CA)
         if self._solid is not None:
             # Make sure to transform the normal as well
-            normal_vector = self._solid.transform_vertex(self._normal)
-        self._normal = normal_vector
+            normal_vector = self._solid.transform_vertex(self.get_normal())
+        self._normal = normal_vector.T
 
     def get_normal(self):
-        return self._normal
+        return self._normal.flatten()
 
     def set_true_normal(self, normal):
         self._true_normal = normal
@@ -168,7 +178,7 @@ class Surface:
         # Transform the source vertex to get its world position
         if self._solid is not None:
             v = self._solid.transform_vertex(v)
-        constant = np.dot(self._normal, v)
+        constant = np.dot(v, self._normal)
         self._plane_constant = constant
         self._d = constant
     
@@ -189,9 +199,10 @@ class Surface:
         self.get_plane_constant()
         if -.2 < np.dot(ray.direction(), self._normal) < .2:
             return -1
-        t = (self._d - np.dot(self._normal, ray.origin())) / np.dot(self._normal, ray.direction())
+        t = (self._d - np.dot(ray.origin().flatten(), self._normal.flatten())) / np.dot(ray.direction().flatten(),self._normal.flatten())
+        return t[0][0]
         return t
- 
+
     def get_intersection_point(self, ray: Ray, t = None):
         """
         Gets the point of intersection between a plane and a ray
@@ -239,17 +250,17 @@ class Surface:
     def get_u(self, point: np.ndarray):
         # The sign of the cross product shouldn't matter, since we wind in the same order as the normal
         radial = self._vertices[0].get_coordinates() - point
-        normal = np.dot(radial, self._AB)
+        normal = np.linalg.norm(np.cross(radial, self._AB))
         return normal / (2 * self._area)
 
     def get_v(self, point):
         radial = self._vertices[1].get_coordinates() - point
-        normal = np.dot(radial, self._BC)
+        normal = np.linalg.norm(np.cross(radial, self._BC))
         return normal / (2 * self._area)
 
     def get_w(self, point):
         radial = self._vertices[2].get_coordinates() - point
-        normal = np.dot(radial, self._CA)
+        normal = np.linalg.norm(np.cross(radial, self._CA))
         return normal / (2 * self._area)
 
     def assign_solid(self, id):
@@ -259,7 +270,7 @@ class Solid:
     """
     Holds a set of surfaces that make up a rigid body. Allows translation and rotation of all vertices and surfaces uniformly about a point
     """
-    def __init__(self,id,*args):
+    def __init__(self, *args):
         """
         Instantiate a solid with a set id and a number of surfaces.
         :param id: The unique id of the solid
@@ -273,16 +284,17 @@ class Solid:
         #self._rotation = IDENTITY
         self._transform = IDENTITY
         # Assign all of the passed surfaces and get the center of mass        
-        self._surfaces = np.array([])
+        self._surfaces = []
         for arg in args:
             self.add_surface(arg)
-        
+
+
     def add_surface(self,surface):
         """
         Adds a new surface to the solid and recalculates the center of mass.
         """
-        np.append(self._surfaces, surface)
-        surface.assign_solid(self._id)
+        self._surfaces.append(surface)
+        surface.assign_solid(self)
         self.get_center_of_mass()
     
     def get_center_of_mass(self):
@@ -294,7 +306,7 @@ class Solid:
         #for surface in self._surfaces:
         #    center= np.add(center, surface.get_center())
         #center /= len(self._surfaces)
-        center = np.mean(self._surfaces, axis=0) # should find the average point in the solid
+        center = np.mean(self.get_surface_coords(), axis=0) # should find the average point in the solid
         self._center = center
         print(f"This is my center {center}")
 
@@ -302,7 +314,10 @@ class Solid:
         return self._center
         
     def get_surfaces(self):
-        return self._surfaces
+        return np.array(self._surfaces)
+
+    def get_surface_coords(self):
+        return np.array([s.center() for s in self._surfaces])
 
     def set_id(self,id):
         self._id = id

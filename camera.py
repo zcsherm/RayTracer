@@ -117,8 +117,8 @@ class Camera:
         v4 = self._d4
         
         # Each point on the screen is a linear combination of the top and side edges. We will treat the bottom left as the origin
-        top_line = np.subtract(v1 - v4)
-        side_line = np.subtract(v4 - v3)
+        top_line = v1 - v4
+        side_line = v4 - v3
         rays = np.empty((width,height),dtype=object)
 
         # Generate a ray sequential from the bottom left to the top right

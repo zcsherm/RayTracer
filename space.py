@@ -13,11 +13,11 @@ class Space:
     those objects and has x y z dimensions
     """
     def __init__(self, x, y, z):
-        self._bounds = np.array([x],[y],[z])
+        self._bounds = np.array([[x],[y],[z]])
         self._objects = {}
         self._camera = None
         self._vertices = []
-        self.set_boundaries
+        self.set_boundaries()
 
     def set_boundaries(self):
         # Get all 8 points in the corners of the space cube
@@ -34,25 +34,25 @@ class Space:
         Create all boundary polygons that create the edge of space in the scene. All surfaces are made in winding order, normal should face origin.
         """
         # Positive X
-        self.add_object(Surface(self._vertices[0], self._vertices[1], self.vertices[3],color=(128,128,128)))
-        self.add_object(Surface(self._vertices[3], self._vertices[2], self.vertices[0],color=(128,128,128)))
+        self.add_object(Solid(Surface(self._vertices[0], self._vertices[1], self._vertices[3],color=(128,128,128))))
+        self.add_object(Solid(Surface(self._vertices[3], self._vertices[2], self._vertices[0],color=(128,128,128))))
         # Negative Z Boundary
-        self.add_object(Surface(self._vertices[1], self._vertices[5], self.vertices[7],color=(128,128,128)))
-        self.add_object(Surface(self._vertices[7], self._vertices[3], self.vertices[1],color=(128,128,128)))
+        self.add_object(Solid(Surface(self._vertices[1], self._vertices[5], self._vertices[7],color=(128,128,128))))
+        self.add_object(Solid(Surface(self._vertices[7], self._vertices[3], self._vertices[1],color=(128,128,128))))
         # Negative X Boundary
-        self.add_object(Surface(self._vertices[5], self._vertices[4], self.vertices[6],color=(128,128,128)))
-        self.add_object(Surface(self._vertices[6], self._vertices[7], self.vertices[5],color=(128,128,128)))
+        self.add_object(Solid(Surface(self._vertices[5], self._vertices[4], self._vertices[6],color=(128,128,128))))
+        self.add_object(Solid(Surface(self._vertices[6], self._vertices[7], self._vertices[5],color=(128,128,128))))
         # Positive Z Boundary
-        self.add_object(Surface(self._vertices[4], self._vertices[0], self.vertices[2],color=(128,128,128)))
-        self.add_object(Surface(self._vertices[2], self._vertices[6], self.vertices[4],color=(128,128,128)))
+        self.add_object(Solid(Surface(self._vertices[4], self._vertices[0], self._vertices[2],color=(128,128,128))))
+        self.add_object(Solid(Surface(self._vertices[2], self._vertices[6], self._vertices[4],color=(128,128,128))))
         # Positive Y Boundary
-        self.add_object(Surface(self._vertices[5], self._vertices[1], self.vertices[0],color=(128,128,128)))
-        self.add_object(Surface(self._vertices[0], self._vertices[4], self.vertices[5],color=(128,128,128)))
+        self.add_object(Solid(Surface(self._vertices[5], self._vertices[1], self._vertices[0],color=(128,128,128))))
+        self.add_object(Solid(Surface(self._vertices[0], self._vertices[4], self._vertices[5],color=(128,128,128))))
         # Negative Y Boundary
-        self.add_object(Surface(self._vertices[6], self._vertices[2], self.vertices[3],color=(128,128,128)))
-        self.add_object(Surface(self._vertices[3], self._vertices[7], self.vertices[6],color=(128,128,128)))
+        self.add_object(Solid(Surface(self._vertices[6], self._vertices[2], self._vertices[3],color=(128,128,128))))
+        self.add_object(Solid(Surface(self._vertices[3], self._vertices[7], self._vertices[6],color=(128,128,128))))
     
-    def add_object(self,object):
+    def add_object(self, object):
         id = generate_id()
         object.set_id(id)
         self._objects[object.id()] = object
