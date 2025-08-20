@@ -1,5 +1,6 @@
 import numpy as np
 
+# A 4x4 Identity Matrix
 IDENTITY = np.array([
     [1, 0, 0, 0],
     [0, 1, 0, 0],
@@ -7,29 +8,37 @@ IDENTITY = np.array([
     [0, 0, 0, 1]
 ])
 
+# A 3x3 Identity Matrix
 IDENTITY_3 = np.array([
     [1, 0, 0],
     [0, 1, 0],
     [0, 0, 1]
 ])
 
+# Negates the x component of a vector
 INVERT_X = np.array([
     [-1, 0, 0],
     [0, 1, 0],
     [0, 0, 1]
 ])
 
+# Negates the y component of a vector
 INVERT_Y = np.array([
     [1, 0, 0],
     [0, -1, 0],
     [0, 0, 1]
 ])
 
+# Negates the z component of a vector
 INVERT_Z = np.array([
     [1, 0, 0],
     [0, 1, 0],
     [0, 0, -1]
 ])
+"""
+Parameterized Rotation matrices. These could be functions, but I like typing lambda
+"""
+# Rotation around Y axis
 YAW = lambda yaw: np.array([
     [np.cos(yaw), 0, np.sin(yaw), 0],
     [0, 1, 0, 0],
@@ -37,6 +46,7 @@ YAW = lambda yaw: np.array([
     [0, 0, 0, 1]
 ])
 
+# Rotation around X axis
 PITCH = lambda pitch: np.array([
     [1, 0, 0, 0],
     [0, np.cos(pitch), -np.sin(pitch), 0],
@@ -44,6 +54,7 @@ PITCH = lambda pitch: np.array([
     [0, 0, 0, 1]
 ])
 
+# Rotation around Y axis
 ROLL = lambda roll: np.array([
     [np.cos(roll), -np.sin(roll), 0, 0],
     [np.sin(roll), np.cos(roll), 0, 0],
@@ -51,6 +62,7 @@ ROLL = lambda roll: np.array([
     [0, 0, 0, 1]
 ])
 
+# Parameterized Translation Matrix -> For translational movement
 TRANSLATE = lambda x, y, z: np.array([
     [1, 0, 0, x],
     [0, 1, 0, y],
@@ -58,6 +70,7 @@ TRANSLATE = lambda x, y, z: np.array([
     [0, 0, 0, 1]
 ])
 
+# Converts a 1 x 3 into a 4 x 1 for multiplication
 AXIS = lambda x, y, z: np.array([
     [x],
     [y],
@@ -65,6 +78,7 @@ AXIS = lambda x, y, z: np.array([
     [1]
 ])
 
+# Transposes a 4x1 back into a 1x3
 TRANSPOSE_3D = lambda x, y, z, l: np.array([
     [x, y, z]
 ])
