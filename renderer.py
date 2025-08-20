@@ -49,6 +49,7 @@ class Renderer:
         self._camera.add_rotation(yaw=random.randint(-10,10))
         self._camera.add_rotation(pitch=random.randint(-10,10))
         self._camera.add_movement(0.3,.1,0)
+        self._camera.new_transform()
         self._camera.print_data()
 
         # Create a list of rays that were generated
