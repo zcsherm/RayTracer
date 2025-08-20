@@ -14,14 +14,15 @@ class Camera:
         """
         Setup the cameras 4 borders, the origin, and transformation matrix
         """
-        self._origin = np.array([0,0,0])
+        self._origin = np.array([0, 0, 0])
+        self._heading = np.array([0, 0, 1])
         self.set_viewport_borders()
         self._transform = IDENTITY
         self.reset_movement()
 
     def set_viewport_borders(self):
         """
-        Generate the 4 boundary vectors of the frustum. Change them into xyz coords
+        Generate the 4 boundary vectors of the frustum. Change them into a flat 1x3 array.
         """
         self._d1 = VECTOR.flatten()
         self._d2 = np.dot(INVERT_Y, VECTOR).flatten()
@@ -59,7 +60,7 @@ class Camera:
 
     def get_transform(self):
         """
-        Get the transformation matrix
+        Get the current transformation matrix
         """
         return self._transform
 
@@ -97,12 +98,20 @@ class Camera:
         self._roll += np.radians(roll)
         
     def update_viewport(self):
+        """
+        Rolls the accumulated movement and rotation into the current transformation matrix
+        """
         self.new_transform()
         # Maybe get the true vector positions
 
     def print_data(self):
-        print(self._pitch,self._roll,self._yaw)
-        print(self._d1,self._d2,self._d3,self._d4)
+        """
+        Prints various values for the camera. Mainly for debugging and logging purposes.
+        """
+        print(f"Pitch: {self._pitch} - Yaw:{self._yaw} - Roll:{self._roll}")
+        print(f" X: {self._x} - Y: {self._y} - Z: {self._z}")
+        print(f"Transform: {self._transform}")
+        print(f"Heading: {self.transform_point(self._heading)}")
 
     def generate_rays(self,width,height):
         """
