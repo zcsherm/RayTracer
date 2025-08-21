@@ -146,9 +146,10 @@ class Camera:
 
                 # Get the world coordinates for the ray, as they are currently in local coordinates to the viewport.
                 ray_direction = self.transform_point(ray_direction)
+                ray_direction = ray_direction / np.linalg.norm(ray_direction) # Normalizing the vector may aid in some calculations and prevents distances to be understated in periphery
                 origin = self.transform_point(self._origin)
                 new_ray = Ray(origin, ray_direction)
-                rays[x][y] =new_ray
+                rays[x][y] = new_ray
                 
         return rays
 
