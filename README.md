@@ -19,6 +19,22 @@ My goal with this project was to try to logic my way through the graphic renderi
 * Wireframe mode
 * Lighting
 
+## How it works
+
+For those curious about ray optics and 3d graphics, this guide aims to help walk through the concepts and math used.
+
+### Prerequisites
+
+While understanding how all this works can be done with no special background or previous knowledge, having some cursory understanding of the following will be exceedingly helpful
+* Vector math
+  * Things like dot products and cross products, as well as normals, magnitudes, and unit vectors
+* 3D Geometry
+  * 3D coordinate math, line segments, and plane equations.
+* Linear Algebra
+  * Matrix multiplication, identity matrices, transpositions, and transformations
+* Computer Science, Data Structures, and Algorithm Analysis
+  * Knowledge in this domain is not necessary to understand the concept of ray tracing, but is vital for implementing an efficient implementation. For example, recognizing that using native python loops over every pixel, for every object in the scene, for every surface in the object, becomes expensive very quickly.
+  
 ## The Journey
 
 My first venture into this project began in my vector calculus class. I realized that a visual field could be approximated by emitting vectors in a cone or similar shape. I later learned that this shape is called a frustum. It was at this point I connected the dots and realized that computer graphics could emulate a 3d environment by emitting a ray from every pixel in the direction defined by the line that pixel makes to the convergence point. I jumped into my IDE and went about implementing a prototype. This was harder said than done.
