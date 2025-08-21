@@ -90,7 +90,7 @@ def get_rotation_matrix(yaw, pitch, roll):
     :param pitch: the degree of rotation about the X axis (like looking up and down)
     :param roll: the degree of rotation about the Z axis (like tilting your head)
     """
-    R = np.dot(YAW(yaw), (PITCH(pitch), ROLL(roll)))
+    R = np.dot(YAW(yaw), np.dot(PITCH(pitch), ROLL(roll)))
     return R
 
 def get_transform(translate: np.ndarray, axis: np.ndarray, yaw_pitch_roll: np.ndarray):
@@ -102,11 +102,14 @@ def get_transform(translate: np.ndarray, axis: np.ndarray, yaw_pitch_roll: np.nd
     :return: a 4x4 Matrix given by T(p) x R x T(-p)
     """
     R = get_rotation_matrix(*yaw_pitch_roll)
+    #print(R)
     T = TRANSLATE(*translate)
-    p = AXIS(*axis)
-    Tp = np.dot(T, p)
-    Tp_b = np.dot(T, np.subtract(IDENTITY, p))
-    return np.dot(Tp, np.dot(R, Tp_b))
+    Tb = TRANSLATE(*-translate)
+    print(T)
+    print(Tb)
+    final = np.dot(T, np.dot(R, Tb))
+    print(final)
+    return final
 
 def apply_transform(translate: np.ndarray, axis: np.ndarray, yaw_pitch_roll: np.ndarray, current_matrix: np.ndarray):
     """

@@ -4,14 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4edbc20b-da2a-4a49-b9b8-63f77bf3bfe1" name="Changes" comment="Fixed some errors, refactored camera">
-      <change afterPath="$PROJECT_DIR$/tester.py" afterDir="false" />
+    <list default="true" id="4edbc20b-da2a-4a49-b9b8-63f77bf3bfe1" name="Changes" comment="Fixed errors, actually renders now, MASSIVE issues with speed. Change pipeline to a matrix based approach">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/camera.py" beforeDir="false" afterPath="$PROJECT_DIR$/camera.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/physical_object.py" beforeDir="false" afterPath="$PROJECT_DIR$/physical_object.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/renderer.py" beforeDir="false" afterPath="$PROJECT_DIR$/renderer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/space.py" beforeDir="false" afterPath="$PROJECT_DIR$/space.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/utilities.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,6 +61,7 @@
     "Python.space.executor": "Run",
     "Python.test.executor": "Run",
     "Python.test_2.executor": "Run",
+    "Python.utilities.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "August-Redesign",
@@ -105,12 +104,21 @@
       <option name="project" value="LOCAL" />
       <updated>1755365830892</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Fixed errors, actually renders now, MASSIVE issues with speed. Change pipeline to a matrix based approach">
+      <option name="closed" value="true" />
+      <created>1755677567763</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1755677567763</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Added utilities, refactored vertex and surface" />
     <MESSAGE value="Fixed some errors, refactored camera" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed some errors, refactored camera" />
+    <MESSAGE value="Fixed errors, actually renders now, MASSIVE issues with speed. Change pipeline to a matrix based approach" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed errors, actually renders now, MASSIVE issues with speed. Change pipeline to a matrix based approach" />
   </component>
 </project>

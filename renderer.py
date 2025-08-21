@@ -5,7 +5,8 @@ import tkinter as tk
 import numpy as np
 from PIL import Image, ImageTk
 UPDATE = 100
-
+HEIGHT_MULTIPLIER = 3
+WIDTH_MULTIPLIER = 3
 # To do:
 # Add lighting, to be lit, surfaces must be parallel to perpendicular to the normal of the lighting,
 # Add wireframe, check if any neighbor pixel was rendered using a different surface, if so, then color black
@@ -37,7 +38,7 @@ class Renderer:
     def create_window(self):
         self._root = tk.Tk()
         self._root.title("Renderer")
-        self._root.geometry(f"{self._width}x{self._height}")  # Set window siz e
+        self._root.geometry(f"{self._width*WIDTH_MULTIPLIER}x{self._height*WIDTH_MULTIPLIER}")  # Set window siz e
         self._img = tk.PhotoImage(width=self._width, height=self._height)
         self._label = tk.Label(self._root, image=self._img)
         self._label.pack()
@@ -46,8 +47,8 @@ class Renderer:
 
     def update(self):
         # change angle is called just for demo purposes, comment out for static camera
-        self._camera.add_rotation(yaw=random.randint(-10,10))
-        self._camera.add_rotation(pitch=random.randint(-10,10))
+        self._camera.add_rotation(yaw=random.randint(-10,0))
+        self._camera.add_rotation(pitch=random.randint(-10,0))
         self._camera.add_movement(0.3,.1,0)
         self._camera.new_transform()
         self._camera.print_data()
@@ -60,8 +61,9 @@ class Renderer:
         rays = self._camera.generate_rays(self._width, self._height)
         img = np.array(self.get_color_of_every_ray(rays), dtype=object)
         img = np.rot90(img)
-        print(img)
+        #print(img)
         img = Image.fromarray(img.astype(np.uint8)) # May need to rotate and flip or transpose first. Origin is top left, but width may be inverted
+        img = img.resize((self._width*WIDTH_MULTIPLIER,self._height*HEIGHT_MULTIPLIER))
         img = ImageTk.PhotoImage(img)
         self._label.configure(image=img)
         self._label.image = img
@@ -80,7 +82,7 @@ class Renderer:
         Gets the color of the closest intersection for a ray. Returns a tuple of the form (r,g,b)
         """
         self._count += 1
-        print(self._count)
+        #print(self._count)
         values = np.array(self.get_t_and_color_for_objects(objects, ray), dtype=object)
         mask = np.array([bool(cell[1]) for cell in values])
         new_values = values[mask]

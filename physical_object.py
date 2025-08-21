@@ -323,9 +323,9 @@ class Surface:
         """
         Given the 3 barycentric coefficients, determine the average color of the intersection (based on vertex color data)
         """
-        c1 = np.array(self._vertices[0].get_color_from_barycentric_value(u))
+        c1 = np.array(self._vertices[2].get_color_from_barycentric_value(u))
         c2 = np.array(self._vertices[0].get_color_from_barycentric_value(v))
-        c3 = np.array(self._vertices[0].get_color_from_barycentric_value(w))
+        c3 = np.array(self._vertices[1].get_color_from_barycentric_value(w))
         color = c1 + c2 + c3
         return tuple(color)
         
