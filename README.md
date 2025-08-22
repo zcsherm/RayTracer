@@ -146,7 +146,7 @@ Using the cross product to find the normal for a given plane means we need one o
 2. 3 vertices on the plane
 You may have noticed a few interesting things about this fact. These 2 statements are pretty much identical, and that we already have 3 vertices from our surface.
 
-If our triangle is bounded by vertices $ABC$, we just need the line segments $AB$ and $BC$. These are given by $B-A$ and $C-B$. We can then find the cross product, $$AB x BC$$. The result of this function is our normal vector, $n=(A, B, C)$. 
+If our triangle is bounded by vertices $LMN$, we just need the line segments $LM$ and $MN$. These are given by $M-L$ and $N-M$. We can then find the cross product, $$LM x MN$$. The result of this function is our normal vector, $n=(A, B, C)$. 
 
 ##### Plane constant
 
