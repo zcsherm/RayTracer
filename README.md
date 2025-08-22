@@ -89,13 +89,70 @@ Let's see if we can find an easy way to define this vector field. An initial ins
 
 Consider the top of the pyramid we lopped off to make our frustum. Center the tip at the origin and point it straight ahead along (0, 0, 1). Let's say the bottom of our pyramid tip is a 3x3 grid of photocells. Instead of being aligned with the origin, it's centered on (0, 0, 1). That's the location of the central photocell, while the top left corner is at (-1, 1, 1). If we create a ray from the origin to each cell, we can define it as: 
 $$P(t) = (0,0,0) + t(x,y,1)$$
-Where x and y are the cells coordinates. This ray also happens to describes the ray that projects outward from the photocell. If you guessed we can just use the vector field $$F{x,y,1} = i + j + k$$ you would be correct! Using these ray definitions we've emulated an important aspect of vision: As something moves closer to the viewer, it will occupy more of the visual field.
+Where x and y are the cells coordinates. This ray also happens to describes the ray that projects outward from the photocell. If you guessed we can just use the vector field $$F(x,y,1) = i + j + k$$ you would be correct! Using these ray definitions we've emulated an important aspect of vision: As something moves closer to the viewer, it will occupy more of the visual field.
 
 ### Objects
 
 #### Background
 
 You may have noticed that our reality is occupied by things! Things have physical properties like volume and are composed of matter. While the metaphysics and real physics on the subject of matter and existence are fascinating, we can ignore most of it. For our illusion, we can treat and view objects like most people do: They just are. However, we can make an interesting distinction. We only have to worry about the surfaces of our objects.
+
+#### Surfaces
+
+If our goal is to eventually construct the yellow cube from our earlier example, we should start with the simplest type of surface we can think of. How about a triangle. 
+
+We can define a triangle as the area bounded by 3 intersecting line segments. However, a simpler (and more effective) way is instead define it by the 3 intersections themselves. You probably recall that these are called vertices. A vertex is just a singular point in space defined by its (x,y,z) coordinates. We'll add some other interesting attributes to our vertices later, but just the 3 dimensional points will suffice for now. 
+
+So our triangle is defined by these 3 vertices and the plane between them. Boom. Easy. Done. Until....
+
+#### Plane equations, intersections, and barycentrics, oh my!
+
+How do we actually tell if a ray collides with this triangle? It's a little tricky, but we can break it down into 4 steps:
+1. Find the plane equation
+2. Check if the ray and plane are parallel
+3. Find the intersection between the ray and the plane
+4. Determine if that point is actually inside the triangle
+
+#### Plane Equations
+
+We need a way of defining all of the points in space that exist inside our triangle. We could always discretize our simulation and collect the finite set of points in the triangle into a single collection. However, we want something that's continuous like reality (again, we'll ignore other interpretations of reality), less burdensome on memory, and more elegant. To do this, we first start with the plane that the triangle resides on. 
+
+To help illustrate what this means, imagine our triangle is drawn on a piece of paper. If this our flat triangle in 3D space, the plane is that piece of paper. Except, imagine that the paper extends infinitely in either direction. If 3D space is defined by 3 dimensions stretching infinitely, a plane is a 2D subset of that space: 2 dimensions stretch infinitely, while one direction is flat. All flat shapes (like our triangle) are subsets of a plane.
+
+The easiest plane to define would be the plane that stretches up and down the Y axis, and left and right along the X axis. This is a lot like our 2x2 grid from earlier. Since it stretches infinitely in the x and y directions, any combination of values for x and y are valid points. Just so long as the z component is 0. In essence any point of the form (x, y, 0) exists along this plane. While this is an easy way to understand a planes domain, we need an equation to really describe it well. 
+
+Plane equations generally have the form of: 
+$$F(x, y, z) -> Ax + By + Cz + D = 0$$
+The values of A, B, C, and D are constants that make this statement true for certain combinations of (x,y,z). If this is hard to understand, try to equate it with the slope-intercept form of a slope: 
+$$y=mx+b$$
+If you rearrange the equation you get:
+$$0=mx-y+b$$
+A point is along the slope if its x and y coordinates make that equation truthy. The plane equation is just a slope equation, with an extra dimension. A slope defined by the equation $y=3x+2$ can be expanded to a plane by recognizing that $A=3, B=-1, D=2$ giving the plane equation $3x - y + 0z + 2 = 0$. This is rather trivial for planes that are aligned along axes, but finding the values of A,B,C, and D can be tricky if you don't know the method.
+
+##### Normals and Cross Products
+
+A, B, and C can be obtained at the same time, and rather easily if you know the trick. We just need to compute the normal of the plane.
+
+The normal is a special vector. It's the vector that is orthogonal to a plane. You can envision this in a few ways. If our plane stretches infinitely in 2 directions, the normal is the line that stretches infinitely in the third direction. If our plane was a plot of land, trees on that plot grow in the direction of the normal. When you use the screen of your phone to find your way in a dark room, the screen is the plane and the direction of the light is the normal. Physics problems involving sums of forces make extensive use of normals.
+
+The A, B, and C coefficients are simply the x, y, and z components of the normal. In the case of our plane along (x, y, 0), the normal vector pointing outward is given by (0, 0, 1). This means our plane equation is $$0x + 0y + 1z + D = 0 -> z + D = 0$$. 
+
+Finding the normal requires a fun little operation called the cross product. This operation takes 2 vectors and finds a vector that is orthogonal to both. Point your left index finger forward, your middle finger to the right, and your thumb straight up. The cross product of your index and middle finger will equal your thumb.
+
+The actual math of the cross product is frustrating. It's a simple function, but the ordering of each component is just a matter of rote memorization. If you're like me, this may not be your strong suit. The intuition for what it's actually doing and why it works at a geometric level is also not immediately clear. If you're doubly like me and 3D reasoning is your even worse suit, the intuition may forever elude you. I wouldn't worry about it for right now, and just treat the cross product as a black box.
+
+Using the cross product to find the normal for a given plane means we need one of two things:
+1. 2 vectors along the plane
+2. 3 vertices on the plane
+You may have noticed a few interesting things about this fact. These 2 statements are pretty much identical, and that we already have 3 vertices from our surface.
+
+If our triangle is bounded by vertices $ABC$, we just need the line segments $AB$ and $BC$. These are given by $B-A$ and $C-B$. We can then find the cross product, $$AB x BC$$. The result of this function is our normal vector, $n=(A, B, C)$. 
+
+##### Plane constant
+
+The last item we need to find is the constant D. This is our plane constant. This is very similar to the intercept value in a slope intercept equation, and it may help to think of it as where the plane intercepts the normal.
+
+A good
  
 ## The Journey
 
@@ -103,7 +160,7 @@ My first venture into this project began in my vector calculus class. I realized
 
 The first snag I ran into was how to define the objects in the environment. The instinctive answer was to use vertices and then generate line segments between these vertices. An objects would simply be the space bounded by these lines. That seemed to be an easy straight forward solution and I was confident I would have a working prototype that evening. So, there I was, My camera was emitting rays across the field of vision and I had objects defined in 3d space. Unfortunately, I had just realized that I need to determine if these rays intersect any of those surfaces. It was clear that this would be a 2 step problem. I was already familiar with: define the plane that the surface exists on, find the t value of the ray that intersects that plane, and then use that to get the coordinates. The second step was much more elusive: Determine if a point rested on the actual surface.
 
-I was determined not to look up an answer to this problem. I ran through different possible solutions: doing hacky comparisons between components (i.e. checking that the x coordinate is greater than at least 1 x vertex coordinate and greater than 1 x vertex coordinate) or representing the point as a linear combination of 2 of the edges. It wasn't until I realized that a point that was inside a triangle divided the triangles area into 3 parts that summed to its whole, and that the angles between all lines from the point and the vertices summed to 2 pi. I later learned that was I was describing is called Baryonic Coordinates.
+I was determined not to look up an answer to this problem. I ran through different possible solutions: doing hacky comparisons between components (i.e. checking that the x coordinate is greater than at least 1 x vertex coordinate and greater than 1 x vertex coordinate) or representing the point as a linear combination of 2 of the edges. It wasn't until I realized that a point that was inside a triangle divided the triangles area into 3 parts that summed to its whole, and that the angles between all lines from the point and the vertices summed to 2 pi. I later learned that was I was describing is called Barycentric Coordinates.
 
 ## Authors
 
