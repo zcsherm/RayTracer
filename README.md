@@ -65,8 +65,38 @@ If our goal is to create an illusion of all this happening, we can greatly simpl
 
 Let's first examine how we can exploit the base case of our thought experiment. Consider vision with only a single photocell. For all intents and purposes, we can treat this photocell as a little square. A ray of light is fired from that square straight forward. Suppose that the ray then hits the side of a yellow cube that is some distance away. Our little square photocell will then turn yellow. Let's add some mathematical and geometric basis to our simulation.
 
-Let's set our photocell to the origin in 3D space at (0, 0, 0) and let's assume it stretches 1 unit wide by 1 unit tall and 0 units deep. If this is hard to visualize, imagine it's a really thin square of paper. The ray that gets fired straight outward then has an origin point of (0, 0, 0) and a direction vector of (0, 0, 1). As a reminder, the equation for a ray and all of the points it intersects is given by: $$P(t) = Origin + Direction * t$$ Which means any point in 3d space that our ray intersects with is: $(x, y, z) = (0, 0, 0) + t(0, 0, 1)$ Where t is the distance from the photocell to that point.
+Let's set our photocell to the origin in 3D space at (0, 0, 0) and let's assume it stretches 1 unit wide by 1 unit tall and 0 units deep. If this is hard to visualize, imagine it's a really thin square of paper. The ray that gets fired straight outward then has an origin point of (0, 0, 0) and a direction vector of (0, 0, 1). As a reminder, the equation for a ray and all of the points it intersects is given by: 
+$$P(t) = Origin + Direction * t$$ 
+Which means any point in 3d space that our ray intersects with is: 
+$(x, y, z) = (0, 0, 0) + t(0, 0, 1)$ 
+Where t is the distance from the photocell to that point.
 
+Let's suppose we want to see more than just a tiny little square and are curious about the $k+1$ case. We're going to increase our photocells from 1 to 4, arranged in a 2x2 pattern at the origin. In this example, our origin points for each ray will be (0,0,0), (0,1,0), (1,0,0), and (1,1,0). If each ray is firing out in a straight line, then every direction vector is still going to be (0, 0, 1) (you might see why this will be a problem). So now it's just a matter of firing every ray outward and checking what they intersect with; each photocell can thus display a different color than either neighbor. This means our 2x2 grid has better image definition than our 1x1 
+
+We've now considered the case of $n=1$ and $n=k+1$, so we can extrapolate this model out to any arbitrary dimension. For example, 1920x1080 photocells, or rather the number of pixels in a typical computer monitor. By associating each pixel on the screen to a 'photocell', we've established the first step in our illusion: how to emulate vision on a computer screen.
+
+#### Frustums
+
+In our 2x2 example, every cell had the same direction vector: (0, 0, 1). This creates an interesting problem; No sense of depth. 
+
+Suppose our 2x2 grid moves closer to the yellow cube in front of it. Does the cube appear larger? If the grid moves away, does the cube appear smaller? As you may have guessed, it does not. Since all of our rays project outward in parallel lines, the cross-sectional area of our rays stays constant with respect to distance. In order to give the sense of depth that natural vision provides, we need to find a way to make closer objects absorb more rays than further ones. Or rather, the further our rays travel, the more area they should cover.
+
+In essence we want our rays to create a positively divergent, radial vector field. If that doesn't make sense, consider a balloon with spots on it. As the balloon inflates, the spots not onnly get further from the center of the balloon, but further apart as well. The surface area of the balloon increases with the radius. It's just a matter of adapting this model to our 2x2 grid.
+
+Consider if each photocell in our 2x2 grid was a dot on the surface of the balloon. After some inflation and expansion, our 2x2 grid might take up the space of a 3x3 grid. Then after a little more, maybe it takes the same space as a 4x4. Critically, it's important to remember that we aren't getting more photocells. They're just larger and take more space. Now lets overlay each of these planes in space. We have our 2x2 grid at 0-z, a 3x3 at 1-z, and a 4x4 at 2-z. If we connect the each corner of our grids we get a 3d shape called a frustum. An easy way to imagine a frustum is to take a pyramid and slice off the top of it. If our grid of photocells and pixels is the smaller of the 2 ends of the frustum, the volume of the frustum is the field of vision.
+
+Let's see if we can find an easy way to define this vector field. An initial instinct might be to find the angle between opposite edges of the frustum and then subdivide that by the width and height. Then each ray projects outward in increments of that subdivision. This definitely works, but it involves using trigonometry and either defining our vectors using angles, or converting between angles and cartesian coordinates. Instead let's exploit how vector directions are defined.
+
+Consider the top of the pyramid we lopped off to make our frustum. Center the tip at the origin and point it straight ahead along (0, 0, 1). Let's say the bottom of our pyramid tip is a 3x3 grid of photocells. Instead of being aligned with the origin, it's centered on (0, 0, 1). That's the location of the central photocell, while the top left corner is at (-1, 1, 1). If we create a ray from the origin to each cell, we can define it as: 
+$$P(t) = (0,0,0) + t(x,y,1)$$
+Where x and y are the cells coordinates. This ray also happens to describes the ray that projects outward from the photocell. If you guessed we can just use the vector field $$F{x,y,1} = i + j + k$$ you would be correct! Using these ray definitions we've emulated an important aspect of vision: As something moves closer to the viewer, it will occupy more of the visual field.
+
+### Objects
+
+#### Background
+
+You may have noticed that our reality is occupied by things! Things have physical properties like volume and are composed of matter. While the metaphysics and real physics on the subject of matter and existence are fascinating, we can ignore most of it. For our illusion, we can treat and view objects like most people do: They just are. However, we can make an interesting distinction. We only have to worry about the surfaces of our objects.
+ 
 ## The Journey
 
 My first venture into this project began in my vector calculus class. I realized that a visual field could be approximated by emitting vectors in a cone or similar shape. I later learned that this shape is called a frustum. It was at this point I connected the dots and realized that computer graphics could emulate a 3d environment by emitting a ray from every pixel in the direction defined by the line that pixel makes to the convergence point. I jumped into my IDE and went about implementing a prototype. This was harder said than done.
