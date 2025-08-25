@@ -164,7 +164,7 @@ $$
 
 Which means that D can be simplified as the negative dot product of the Normal and a Point on the plane! Now, sometimes you'll see D listed as the positive dot product, and sometimes as the negative dot product. I prefer listing it as the negative dot product, as that's what you get with the plane equation (and your vector calculus teachers will mark you down for a flipped D value). However, keeping it as the positive is very helpful later on when checking intersections and is just easier to grok and remember.
 
-There is one main takeaway you should remember from this: If a point $P$ is known to exist on a plane with the normal $N$, then a point $Q$ in space that satisifies the equation $P * N = Q * N$ also exists on the plane. 
+There is one main takeaway you should remember from this: If a point $P$ is known to exist on a plane with the normal $N$, then a point $Q$ in space that satisifies the equation $P * N = Q * N$ also exists on the plane.
 
 ##### Example
 
@@ -278,7 +278,10 @@ $$
 
 ##### The actual equations....maybe
 
-We should now be aware that the formulas we use on a day to day basis have a lot of assumptions baked right into them. For our using our 2 edges approach, it's helpful if we consider the case where it doesn't hold up. Suppose we have 2 edges both with a length of 1. Now let's make the angle between them tiny, say maybe 5 degrees. Our parallelogram is just a thin little sliver of a shape, and should have a fairly small area. If we compare it to a square with sides of one, it's pretty clear that the square has a much larger area. The equation
+We should now be aware that the formulas we use on a day to day basis have a lot of assumptions baked right into them. For our using our 2 edges approach, it's helpful if we consider the case where it doesn't hold up. Suppose we have 2 edges both with a length of 1. Now let's make the angle between them tiny, say maybe 5 degrees. Our parallelogram is just a thin little sliver of a shape, and should have a fairly small area. If we compare it to a square with sides of one, it's pretty clear that the square has a much larger area. Using this observation, we can surmise that the area of a parallelogram is dependent on both the size of the lengths and the angle between them. $L*W$ works for a square, but is too large for our thin sliver. We need some sort of function of the angle that is 1 when our angle is 90 and gets smaller with smaller angles. Hey, that's what Sine is!
+
+$$
+
 
 ## The Journey
 
