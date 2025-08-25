@@ -87,8 +87,10 @@ Consider if each photocell in our 2x2 grid was a dot on the surface of the ballo
 
 Let's see if we can find an easy way to define this vector field. An initial instinct might be to find the angle between opposite edges of the frustum and then subdivide that by the width and height. Then each ray projects outward in increments of that subdivision. This definitely works, but it involves using trigonometry and either defining our vectors using angles, or converting between angles and cartesian coordinates. Instead let's exploit how vector directions are defined.
 
-Consider the top of the pyramid we lopped off to make our frustum. Center the tip at the origin and point it straight ahead along (0, 0, 1). Let's say the bottom of our pyramid tip is a 3x3 grid of photocells. Instead of being aligned with the origin, it's centered on (0, 0, 1). That's the location of the central photocell, while the top left corner is at (-1, 1, 1). If we create a ray from the origin to each cell, we can define it as: 
-$$P(t) = (0,0,0) + t(x,y,1)$$
+Consider the top of the pyramid we lopped off to make our frustum. Center the tip at the origin and point it straight ahead along (0, 0, 1). Let's say the bottom of our pyramid tip is a 3x3 grid of photocells. Instead of being aligned with the origin, it's centered on (0, 0, 1). That's the location of the central photocell, while the top left corner is at (-1, 1, 1). If we create a ray from the origin to each cell, we can define it as:
+$$
+P(t) = (0,0,0) + t(x,y,1)
+$$
 Where x and y are the cells coordinates. This ray also happens to describes the ray that projects outward from the photocell. If you guessed we can just use the vector field $$F(x,y,1) = i + j + k$$ you would be correct! Using these ray definitions we've emulated an important aspect of vision: As something moves closer to the viewer, it will occupy more of the visual field.
 
 ### Objects
@@ -150,10 +152,109 @@ If our triangle is bounded by vertices $LMN$, we just need the line segments $LM
 
 ##### Plane constant
 
-The last item we need to find is the constant D. This is our plane constant. This is very similar to the intercept value in a slope intercept equation, and it may help to think of it as where the plane intercepts the normal.
+The last item we need to find is the constant $D$. This is our plane constant. This is very similar to the intercept value in a slope intercept equation, and it may help to think of it as where the plane intercepts the normal.
 
-A good
- 
+Now, there's 2 ways to find $D$. The simplest way is to find any point in the plane (such as a vertex from our triangle) and plug those values into the $Ax + By + Cz + D = 0$ equation, then just solve for D. The second way is a little cleverer and I greatly prefer it.
+
+You may have noticed something about the $Ax, By, Cz$ portion of the equation. If our normal is $(A, B, C)$ and our vertex is $(x, y, z)$, then the non-$D$ portion of the equation is the dot product of the normal and a point on the plane! If you're unfamiliar with the dot product, it's just the sum of an elementwise multiplication of two vectors. With this in mind, we can rewrite our equation as: 
+
+$$
+N*P + D = 0
+$$
+
+Which means that D can be simplified as the negative dot product of the Normal and a Point on the plane! Now, sometimes you'll see D listed as the positive dot product, and sometimes as the negative dot product. I prefer listing it as the negative dot product, as that's what you get with the plane equation (and your vector calculus teachers will mark you down for a flipped D value). However, keeping it as the positive is very helpful later on when checking intersections and is just easier to grok and remember.
+
+There is one main takeaway you should remember from this: If a point $P$ is known to exist on a plane with the normal $N$, then a point $Q$ in space that satisifies the equation $P * N = Q * N$ also exists on the plane. 
+
+##### Example
+
+Suppose we have 3 points
+
+$$
+P = (1, 2, 3)
+$$
+
+$$
+Q = (4, 3, 2)
+$$
+
+$$
+R = (2, 0, -1)
+$$
+
+Try to image the triangle. If you're standing on the origin looking straight ahead, the triangle is going to form a roughly 45 degree angle with the ground and is tilted towards the origin.
+
+To find the normal we construct our 2 line segments and find the normal:
+
+$$
+PQ = Q-P = (4-1, 3-2, 2-3) = (3, 1, -1)
+$$
+
+$$
+RP = P-R = (1-2, 2-0, 3-(-1)) = (-1, 2, 4)
+$$
+
+$$
+N = RP x PQ = (-6, 11, -7) 
+$$
+
+Note that we should try to stay consistent with the order we select our edges, as this determines the 'facing' of our surface.
+
+Let's think about whether this makes sense: the triangle is angled upwards towards the ceiling, and when we turn, it's sorta pointing back at us. So we should expect the normal to point above our heads and behind us. With $(-6, 11, -7)$ it's clear that this normal points upwards and behind us. Cool!
+
+Now, we find D:
+
+$$
+N*P + D = 0
+$$
+
+$$
+(-6, 11, -7) * (1, 2, 3) + D = 0
+$$
+
+$$
+(-6 + 22 - 21) + D = 0
+$$
+
+$$
+D = 5
+$$
+
+Any arbitrary point $S$ in space is on the plane if either of these 2 equations are truthy:
+
+$$
+-6(Sx) + 11(Sy) + -7(Sz) + 5 =0
+$$
+
+$$
+N * S = -5 = N * P
+$$
+
+#### Parallelism
+
+With our plane equation in hand, we can start checking if our vision ray intersects the plane. But first, it's important to imagine and think about what situations a ray may or may not intersect a plane. One case that our ray doesn't intersect our plane, is if the plane is behind the origin of the ray. Afterall, we only care about objects in our line of vision. But what if the object is ahead of the origin? Is there any situation where the ray doesn't intersect with the plane created by that object? There exists only a single instance: if the ray is parallel to the surface.
+
+Imagine you're in a race car travelling down an infinitely long straight stretch of road. This race car is special and can't turn and travels in a perfectly straight line. There is a guard rail on the right hand side of the road. No matter how far you go, you will never collide with the guard rail. This is because you're always going straight ahead, and the guard rail stretches in a straight line along the same direction. Your movement and the guard rail are parallel. Now, suppose that the guard rail was angled ever so slightly towards the center of the road. No matter how slight this angle is, your car will eventually collide with the guard rail; you and the guard rail are no longer parallel.
+
+
+
+### Cross Product - revisited
+
+If you can't stand treating the cross product as a black box, then let's see if we can work our way through the logic of it.
+
+In 2 dimensions, we often find ourselves taking the area of a shape for granted. It really is a mystical operation and years of public school have made it seem less than it really is. We all innately know that a rectangle is $b*h$ and that a triangle is $1/2 b *h$ and so on and so forth. But somehow, we're taking the single dimensional sides of a shape and computing a scalar of a 2 dimensional construct: the area. You should note that many area formulas are similar or even the same. For example, the area of a rectangle is a special case of the area of a parallelogram, as $sin(90) = 1$. These equations are all special cases of 3 dimensional area equations, where the z component is 0.
+
+Consider a rectangle with a base of 3 and a height of 2 and an area of 6. If we put this on on a 2D grid, we get a rectangle with 4 corners: $(0,0),(3,0),(0,2),(3,2)$. Let's see if we can play around with these numbers and see if we can get any new insights on what our number pushing means.
+
+We can define the following vectors:
+
+$$
+E_1 = <3,0>, 
+E_2 = <0,2>, 
+D_1 = <3, -2>, 
+D_2 = <3, 2>
+$$
+
 ## The Journey
 
 My first venture into this project began in my vector calculus class. I realized that a visual field could be approximated by emitting vectors in a cone or similar shape. I later learned that this shape is called a frustum. It was at this point I connected the dots and realized that computer graphics could emulate a 3d environment by emitting a ray from every pixel in the direction defined by the line that pixel makes to the convergence point. I jumped into my IDE and went about implementing a prototype. This was harder said than done.
