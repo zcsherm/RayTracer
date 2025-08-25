@@ -249,11 +249,24 @@ Consider a rectangle with a base of 3 and a height of 2 and an area of 6. If we 
 We can define the following vectors:
 
 $$
-E_1 = <3,0>, 
-E_2 = <0,2>, 
+E_1 = <3,0>\\\\  
+E_2 = <0,2>,\\\\   
 D_1 = <3, -2>, 
 D_2 = <3, 2>
 $$
+
+We can get our target number in some interesting ways:
+
+$$
+||E_1||||E_2||
+$$
+
+$$
+||D_1 + D_2||
+$$
+
+If you experiment with other parallelograms, you'll notice that these methods don't always work. This should tell you that these equations are actually special cases of a more general form. In the first case, it's because our vectors are perpendicular to each other and pretty neatly oriented about the origin.
+
 
 ## The Journey
 
