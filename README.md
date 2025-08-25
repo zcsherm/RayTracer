@@ -265,8 +265,20 @@ $$
 ||D_1 + D_2||
 $$
 
-If you experiment with other parallelograms, you'll notice that these methods don't always work. This should tell you that these equations are actually special cases of a more general form. In the first case, it's because our vectors are perpendicular to each other and pretty neatly oriented about the origin.
+If you experiment with other parallelograms, you'll notice that these methods don't always work. This should tell you that these equations are actually special cases of a more general form. In the first case, it's because our vectors are perpendicular to each other and pretty neatly oriented about the origin. The second case depends on our diagonals having equivalent magnitudes, and it doesn't hurt that one is $(x, -y)$ of the other. This can only happen when our shape is a rectangle and the angle between edges and diagonals is 90 degrees. After much pushing equations around, the addition of diagonals is only viable when the xor of the following is true:
 
+$$
+2Ax = sqrt(Ax^2)
+$$
+$$
+2Ay = sqrt(Ay^2)
+$$
+
+(if you want to be exacting, the actual conditions depend on the quadrants of the vectors.)
+
+##### The actual equations....maybe
+
+We should now be aware that the formulas we use on a day to day basis have a lot of assumptions baked right into them. For our using our 2 edges approach, it's helpful if we consider the case where it doesn't hold up. Suppose we have 2 edges both with a length of 1. Now let's make the angle between them tiny, say maybe 5 degrees. Our parallelogram is just a thin little sliver of a shape, and should have a fairly small area. If we compare it to a square with sides of one, it's pretty clear that the square has a much larger area. The equation
 
 ## The Journey
 
