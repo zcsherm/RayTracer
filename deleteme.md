@@ -265,16 +265,90 @@ $$
 ||D_1 + D_2||
 $$
 
-If you experiment with other parallelograms, you'll notice that these methods don't always work. This should tell you that these equations are actually special cases of a more general form. In the first case, it's because our vectors are perpendicular to each other and pretty neatly oriented about the origin. The second case depends on our diagonals having equivalent magnitudes, and it doesn't hurt that one is $(x, -y)$ of the other. This can only happen when our shape is a rectangle and the angle between edges and diagonals is 90 degrees. After much pushing equations around, the addition of diagonals is only viable when the xor of the following is true:
+If you experiment with other parallelograms, you'll notice that these methods don't always work. This should tell you that these equations are actually special cases of a more general form. In the first case, it's because our vectors are perpendicular to each other and pretty neatly oriented about the origin. The second case depends on our diagonals having equivalent magnitudes, and it doesn't hurt that one is $(x, -y)$ of the other. This can only happen when our shape is a rectangle and the angle between edges and diagonals is 90 degrees. After much pushing equations around, the addition of diagonals happens to be a coincidence. It only occurs when one side is 2 and the shape is a rectangle. 
+
+
+# Add to Readme
+
+Let's break down our area formula and see if we can get any interesting insights from it.
 
 $$
-2Ax = sqrt(Ax^2)
-$$
-$$
-2Ay = sqrt(Ay^2)
+LWsin(\theta)
 $$
 
-(if you want to be exacting, the actual conditions depend on the quadrants of the vectors.)
+Again, our understanding of geometry began with magnitudes rather than vectors, so let's show that
+
+$$
+\|A\|\|B\|sin(\theta)
+$$
+
+$$
+\sqrt(A_x^2+A_y^2)\sqrt(B_x^2+B_y^2)sin(\theta)
+$$
+
+Our simple formula is hiding some rather ugly math. Our original equation $LW$ hinged only 2 assumptions: We only know the magnitudes of the sides, and our $sin(\theta)$ is equal to 1. Let's add a third assumption: One of our vectors is aligned along the x-axis. We'll see why this is convenient later. If we have the components of our vectors we can actually redfine the sine portion of our equation as such (alpha and beta represnting the angle of our 2d vectors from the x axis):
+
+$$
+sin(\theta) = sin(\alpha)-sin(\beta)
+$$
+
+$$
+sin(\theta) = \frac{A_y}{\|A\|} - \frac{B_y}{\|B\|}
+$$
+
+$$
+sin(\theta) = \frac{A_y}{\sqrt(A_x^2+A_y^2)} - \frac{B_y}{\sqrt(B_x^2+B_y^2)}
+$$
+
+If we assume that B is aligned with the x axis and has a null y component:
+
+$$
+sin(\theta) = \frac{A_y}{\sqrt(A_x^2+A_y^2)}
+$$
+
+Now if we plug this into our earlier equation:
+
+$$
+Area = \sqrt(A_x^2+A_y^2)\sqrt(B_x^2+B_y^2) * \frac{A_y}{\sqrt(A_x^2+A_y^2)}
+$$
+
+$$
+Area = \sqrt(B_x^2+B_y^2)A_y
+$$
+
+$$
+Area = B_xA_y
+$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ##### The actual equations....maybe
 
