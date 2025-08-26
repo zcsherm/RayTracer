@@ -47,9 +47,9 @@ class Renderer:
 
     def update(self):
         # change angle is called just for demo purposes, comment out for static camera
-        self._camera.add_rotation(yaw=random.randint(-10,0))
-        self._camera.add_rotation(pitch=random.randint(-10,0))
-        self._camera.add_movement(0.3,.1,0)
+        self._camera.add_rotation(yaw=random.randint(0,5))
+        self._camera.add_rotation(pitch=random.randint(0,5))
+        self._camera.add_movement(.1,.1,-.1)
         self._camera.new_transform()
         self._camera.print_data()
 

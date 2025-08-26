@@ -68,7 +68,7 @@ Let's first examine how we can exploit the base case of our thought experiment. 
 Let's set our photocell to the origin in 3D space at (0, 0, 0) and let's assume it stretches 1 unit wide by 1 unit tall and 0 units deep. If this is hard to visualize, imagine it's a really thin square of paper. The ray that gets fired straight outward then has an origin point of (0, 0, 0) and a direction vector of (0, 0, 1). As a reminder, the equation for a ray and all of the points it intersects is given by: 
 $$P(t) = Origin + Direction * t$$ 
 Which means any point in 3d space that our ray intersects with is: 
-$(x, y, z) = (0, 0, 0) + t(0, 0, 1)$ 
+$$(x, y, z) = (0, 0, 0) + t(0, 0, 1)$$ 
 Where t is the distance from the photocell to that point.
 
 Let's suppose we want to see more than just a tiny little square and are curious about the $k+1$ case. We're going to increase our photocells from 1 to 4, arranged in a 2x2 pattern at the origin. In this example, our origin points for each ray will be (0,0,0), (0,1,0), (1,0,0), and (1,1,0). If each ray is firing out in a straight line, then every direction vector is still going to be (0, 0, 1) (you might see why this will be a problem). So now it's just a matter of firing every ray outward and checking what they intersect with; each photocell can thus display a different color than either neighbor. This means our 2x2 grid has better image definition than our 1x1 
@@ -146,6 +146,7 @@ The actual math of the cross product is frustrating. It's a simple function, but
 Using the cross product to find the normal for a given plane means we need one of two things:
 1. 2 vectors along the plane
 2. 3 vertices on the plane
+
 You may have noticed a few interesting things about this fact. These 2 statements are pretty much identical, and that we already have 3 vertices from our surface.
 
 If our triangle is bounded by vertices $LMN$, we just need the line segments $LM$ and $MN$. These are given by $M-L$ and $N-M$. We can then find the cross product, $$LM x MN$$. The result of this function is our normal vector, $n=(A, B, C)$. 
@@ -268,10 +269,10 @@ $$
 If you experiment with other parallelograms, you'll notice that these methods don't always work. This should tell you that these equations are actually special cases of a more general form. In the first case, it's because our vectors are perpendicular to each other and pretty neatly oriented about the origin. The second case depends on our diagonals having equivalent magnitudes, and it doesn't hurt that one is $(x, -y)$ of the other. This can only happen when our shape is a rectangle and the angle between edges and diagonals is 90 degrees. After much pushing equations around, the addition of diagonals is only viable when the xor of the following is true:
 
 $$
-2Ax = sqrt(Ax^2)
+2Ax = sqrt(Ax^2) = sqrt(By^2)
 $$
 $$
-2Ay = sqrt(Ay^2)
+2Ay = sqrt(Ay^2) = sqrt(Bx^2)
 $$
 
 (if you want to be exacting, the actual conditions depend on the quadrants of the vectors.)
@@ -280,7 +281,57 @@ $$
 
 We should now be aware that the formulas we use on a day to day basis have a lot of assumptions baked right into them. For our using our 2 edges approach, it's helpful if we consider the case where it doesn't hold up. Suppose we have 2 edges both with a length of 1. Now let's make the angle between them tiny, say maybe 5 degrees. Our parallelogram is just a thin little sliver of a shape, and should have a fairly small area. If we compare it to a square with sides of one, it's pretty clear that the square has a much larger area. Using this observation, we can surmise that the area of a parallelogram is dependent on both the size of the lengths and the angle between them. $L*W$ works for a square, but is too large for our thin sliver. We need some sort of function of the angle that is 1 when our angle is 90 and gets smaller with smaller angles. Hey, that's what Sine is!
 
+With that in mind we can safely assume that the area for any parallelogram is given by
+
 $$
+LW*sin(\theta)
+$$
+
+The more commonly used formula is:
+
+$$
+LH
+$$
+
+Where $H$ is the distance between $L$ and its parallel line 
+
+Now, hopefully you see the assumption in these questions: We are using scalar magnitudes to represent the lines, rather than vectors. The equations that we've memorized don't care about the shapes position in space, only the measured length. If we rewrite these equations we can get (if we assume the lower left vertex is at the origin):
+
+$$
+|AB||AC|*sin(\theta)->sqrt(B_x^2+B_y^2)*sqrt(C_x^2+C_y^2)*sin(\theta)
+$$
+
+$$
+|AB|H| -> sqrt(B_x^2+B_y^2)*H
+$$
+
+Well... what the hell is $H$ in vector form?
+
+For this, we need to use a little trick called projection. Vector projection lets us see how much one vector 'casts' to another. It's easier to visualize it like shadows.
+Consider one arrow stretching flat across the x axis, and another that's short and pointing up at a $45\degree$ angle. 
+From the tip of our upward pointing arrow, draw a line straight down to the x-axis. The projection is the vector from the start of our x axis arrow to that point. It's as if the sun was directly above our vectors; The projection is how long the shadow would be.
+
+You might also have noticed that the length of the line we drew from one vector down to the other, has a magnitude of $H$
+To find out $H$ we can exploit the pythagorean theorem, since vector projections always form a 90 degree angle with the base
+Our projection vector is given by:
+
+$$
+\frac{AB*AC}{\|AB\|}*AB
+$$
+
+Thus, $H$ equals:
+
+$$
+H^2=\|AC\|^2 - \|\frac{AB*AC}{\|AB\|}*AB\|^2
+$$
+
+$$
+H^2 = (C_x^2+C_y^2)-\|\frac{B_xC_x+B_yC_y}{\sqrt{B_x^2+B_y^2}}*AB\|^2
+$$
+
+This gets messy very quickly
+
+Note to self: Talk about signs, 2D sign is determined solely by order of vectors as there is only positive or negative facing. In 3D, We need something richer to describe what direction. Also mention determinant 
 
 
 ## The Journey

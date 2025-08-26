@@ -10,7 +10,7 @@ Things to add:
     Rotation and translation of solids and surfaces
     Wire frame (return the object that each ray hits, render that ray black if it is a different surface than neighbor.
 """
-renderer = Renderer(50,25)
+renderer = Renderer(100,75)
 space= Space(400,400,400)
 renderer.add_space(space)
 camera = Camera()

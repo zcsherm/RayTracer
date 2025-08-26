@@ -54,6 +54,7 @@ class Camera:
         Updates the current transformation matrix and resets accumulated translations and rotations. Call this before rendering.
         """
         t = self.get_translate_viewport(self._x, self._y, self._z)
+        print(f"t: {t}")
         r = self.get_rotations(self._yaw, self._pitch, self._roll)
         self.update_transform(t, r)
         self.reset_movement()
@@ -110,6 +111,7 @@ class Camera:
         """
         print(f"Pitch: {self._pitch} - Yaw:{self._yaw} - Roll:{self._roll}")
         print(f" X: {self._x} - Y: {self._y} - Z: {self._z}")
+        print(f"World Coordinates: {self.transform_point(self._origin)}")
         print(f"Transform: {self._transform}")
         print(f"Heading: {self.transform_point(self._heading)}")
 

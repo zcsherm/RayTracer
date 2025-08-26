@@ -102,12 +102,15 @@ def get_transform(translate: np.ndarray, axis: np.ndarray, yaw_pitch_roll: np.nd
     :return: a 4x4 Matrix given by T(p) x R x T(-p)
     """
     R = get_rotation_matrix(*yaw_pitch_roll)
-    #print(R)
-    T = TRANSLATE(*translate)
-    Tb = TRANSLATE(*-translate)
-    print(T)
-    print(Tb)
-    final = np.dot(T, np.dot(R, Tb))
+    print(R)
+    to_origin = TRANSLATE(*axis)
+    from_origin = TRANSLATE(*-axis)
+    print(to_origin)
+    print(from_origin)
+    rotation = np.dot(to_origin, np.dot(R, from_origin))
+    print(rotation)
+    translation = TRANSLATE(*translate)
+    final = np.dot(translation,rotation)
     print(final)
     return final
 

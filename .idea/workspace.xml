@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4edbc20b-da2a-4a49-b9b8-63f77bf3bfe1" name="Changes" comment="Fixed errors, actually renders now, MASSIVE issues with speed. Change pipeline to a matrix based approach">
+    <list default="true" id="4edbc20b-da2a-4a49-b9b8-63f77bf3bfe1" name="Changes" comment="Fixed issues with transformation matrix. Now properly rotates camera. Fixed vertex data mapping to wrong vertex.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/physical_object.py" beforeDir="false" afterPath="$PROJECT_DIR$/physical_object.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/camera.py" beforeDir="false" afterPath="$PROJECT_DIR$/camera.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/renderer.py" beforeDir="false" afterPath="$PROJECT_DIR$/renderer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/utilities.py" afterDir="false" />
@@ -56,6 +57,7 @@
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "Python tests.Python tests in tester.py.executor": "Run",
+    "Python.camera.executor": "Run",
     "Python.physical_object.executor": "Run",
     "Python.renderer.executor": "Run",
     "Python.space.executor": "Run",
@@ -112,13 +114,22 @@
       <option name="project" value="LOCAL" />
       <updated>1755677567763</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Fixed issues with transformation matrix. Now properly rotates camera. Fixed vertex data mapping to wrong vertex.">
+      <option name="closed" value="true" />
+      <created>1755757746088</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1755757746088</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Added utilities, refactored vertex and surface" />
     <MESSAGE value="Fixed some errors, refactored camera" />
     <MESSAGE value="Fixed errors, actually renders now, MASSIVE issues with speed. Change pipeline to a matrix based approach" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed errors, actually renders now, MASSIVE issues with speed. Change pipeline to a matrix based approach" />
+    <MESSAGE value="Fixed issues with transformation matrix. Now properly rotates camera. Fixed vertex data mapping to wrong vertex." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed issues with transformation matrix. Now properly rotates camera. Fixed vertex data mapping to wrong vertex." />
   </component>
 </project>
