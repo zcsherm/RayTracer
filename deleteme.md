@@ -353,7 +353,7 @@ $$
 This is what's known as a determinant. The determinant is a measure of the dimensions of a set of vectors. You can think of it like how much they span, though this is technically incorrect as span has a very specific definition. If that's still confusing let's break down a bit more. Let's take our two vectors and imagine we want get an arbitrary point that exists between them. If we want to get the top right corner of the parallelogram we would just use $A+B$ and that points to the corner. What if we wanted to get the point halfway up the right edge? Well, that's just $.5A + B$. A point smack dab in the middle? That's just $.5A+.5B$. Thus, any point in the parallelogram is given by:
 
 $$
-P=\alphaA + \betaB\text{ where:} 0<=
+P=\alpha A + \beta B,\ \ \ \text{where:  }\  0\le \alpha \le 1\ \text{and}\ 0\le\beta\le1
 $$
 
 

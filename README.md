@@ -329,9 +329,115 @@ $$
 H^2 = (C_x^2+C_y^2)-\|\frac{B_xC_x+B_yC_y}{\sqrt{B_x^2+B_y^2}}*AB\|^2
 $$
 
-This gets messy very quickly
+This gets messy very quickly, and thankfully, there's an easier way to look at all of this:
+
+Let's break down our area formula and see if we can get any interesting insights from it.
+
+$$
+LWsin(\theta)
+$$
+
+Again, our understanding of geometry began with magnitudes rather than vectors, so let's show that
+
+$$
+\|A\|\|B\|sin(\theta)
+$$
+
+$$
+\sqrt{A_x^2+A_y^2}\sqrt{B_x^2+B_y^2}sin(\theta)
+$$
+
+Our simple formula is hiding some rather ugly math. Our original equation $LW$ hinged only 2 assumptions: We only know the magnitudes of the sides, and our $sin(\theta)$ is equal to 1. Let's add a third assumption: One of our vectors is aligned along the x-axis. We'll see why this is convenient later. If we have the components of our vectors we can actually redfine the sine portion of our equation as such (alpha and beta represnting the angle of our 2d vectors from the x axis):
+
+$$
+sin(\theta) = sin(\alpha)
+$$
+
+$$
+sin(\theta) = \frac{A_y}{\|A\|}
+$$
+
+$$
+sin(\theta) = \frac{A_y}{\sqrt{A_x^2+A_y^2}}
+$$
+
+Now if we plug this into our earlier equation:
+
+$$
+Area = \sqrt{A_x^2+A_y^2}\sqrt{B_x^2+B_y^2} \cdot \frac{A_y}{\sqrt{A_x^2+A_y^2}}
+$$
+
+$$
+Area = A_y\sqrt{B_x^2+B_y^2}
+$$
+
+$$
+Area = B_xA_y
+$$
+
+For a rectangle aligned along the x-axis, this is equivalent to $LW$ as the magnitude of each vector is equivalent to its non-zero component. For a parallelogram aligned along the x-axis (where the $A$ vector has a non-zero x and y component), this equation equals the commonly known equation of $BH$. In this case $A_y$ is equivalent to the height of the parallelogram. If our vectors are not aligned along the axes, the equation gets much messier with:
+
+$$
+sin(\theta) = \sin(\alpha)cos(\beta)-sin(\beta)cos(\alpha)
+$$
+
+Note that when our B vector is aligned with the x-axis, the second term equals 0 and the first term is simply $sin(alpha)$, which is our earlier equation.
+
+$$
+sin(\theta) = \frac{A_y}{\|A\|}\frac{B_x}{\|B\|} - \frac{B_y}{\|B\|}\frac{A_x}{\|A\|}
+$$
+
+$$
+sin(\theta) = \frac{A_yB_x-A_xB_y}{\sqrt{A_x^2+A_y^2}\sqrt{B_x^2+B_y^2}}
+$$
+
+The numerator of this equation will become very important later, and if you're familiar with linear algebra you can probably recognize it.
+
+$$
+Area = \|A\|\|B\|\frac{A_yB_x-A_xB_y}{\sqrt{A_x^2+A_y^2}\sqrt{B_x^2+B_y^2}}
+$$
+
+$$
+Area = \sqrt{A_x^2+A_y^2}\sqrt{B_x^2+B_y^2}\frac{A_yB_x-A_xB_y}{\sqrt{A_x^2+A_y^2}\sqrt{B_x^2+B_y^2}}
+$$ 
+
+$$
+Area = A_yB_x-A_xB_y
+$$
+
+That's kinda wild. If we know the components of our vectors we can find the area of the parallelogram between them with a really simple equation. No trigonometry required. Let's rewrite that formula slightly.
+
+$$
+A_xB_y-A_yB_x
+$$
+
+This is what's known as a determinant. The determinant is a measure of the dimensions of a set of vectors. You can think of it like how much they span, though this is technically incorrect as span has a very specific definition. If that's still confusing let's break down a bit more. Let's take our two vectors and imagine we want get an arbitrary point that exists between them. If we want to get the top right corner of the parallelogram we would just use $A+B$ and that points to the corner. What if we wanted to get the point halfway up the right edge? Well, that's just $.5A + B$. A point smack dab in the middle? That's just $.5A+.5B$. Thus, any point in the parallelogram is given by:
+
+$$
+P=\alpha A + \beta B,\ \ \ \text{where:  }\  0\le \alpha \le 1\ \text{and}\ 0\le\beta\le1
+$$
+
+The determinant is a handy way of telling us how much 'space' we have to play with using these vectors.
+
+If we set our vectors side by side:
+
+$$
+(3,0),(0,2) -> \begin{bmatrix}
+3 & 0 \\
+0 & 2 
+\end{bmatrix}
+$$
+
+We get a 2x2 Matrix with a determinant of 6. Please note that for diagonal matrices like this one (0's in every cell that isn't on the diagonal), the determinant is also the product of the diagonal entries.
+
+
 
 Note to self: Talk about signs, 2D sign is determined solely by order of vectors as there is only positive or negative facing. In 3D, We need something richer to describe what direction. Also mention determinant 
+
+
+
+
+
 
 
 ## The Journey
