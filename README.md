@@ -428,7 +428,38 @@ $$
 \end{bmatrix}
 $$
 
-We get a 2x2 Matrix with a determinant of 6. Please note that for diagonal matrices like this one (0's in every cell that isn't on the diagonal), the determinant is also the product of the diagonal entries.
+We get a 2x2 Matrix with a determinant of 6. Please note that for diagonal matrices like this one (0's in every cell that isn't on the diagonal), the determinant is also the product of the diagonal entries. Depending on the order we list our vectors, the sign of the determinant changes. Let's think about what the sign means.
+
+If our area is either 6 or -6, what is that trying to tell us? An area can't be negative like a scalar value can be. It doesn't represent a void that consumes positive space. Instead, the sign is telling us which way our space is 'facing'. You'll remember that angles that open up from the x axis are positive, while angles the open downward are negative. The same is true for areas. Suppose we look at the square formed by $(1,0)$ and $(0,1)$. If we imagine that we swept out the area from $(1,0)$, we are moving with a positive angle. That means the area should be positive. If we do the reverse and sweep from $(0,1)$ we move with a negative angle. This means our area is negative.
+
+If our square was a piece of paper with a picture on one side on a table, the sign of the area is trying to describe which way it faces; Positive means it's face up and we can see it, negative means it's face down on the table and we cannot see the picture.
+
+In 2 dimensions, 'facing' is an artifact from 3 dimensions, and doesn't really exist or matter (outside of certain applications). Thus, we usually only concern ourselves with the absolute value of the area. $LW$ is the same as $WL$, but $L_xW_y-L_yW_x$ is not the same as $L_yW_x-L_xW_y$. More accurately, we treat 2-dimensional math as though it were a plane in 3D space, and our perspective is facing it head on. This means the $Z$ component can only be binary: positive or negative. Ok, so hold up. If we know the sign of the $Z$ component, and we're assuming the $Z$ points only straight up or down through $(0,0)$, can't we give the Z component any arbitrary value? Better yet, let's assign it the determinant! Now we've got a vector that is orthogonal to both original vectors with a magnitude equal to the area of the parallelogram that they form. This is what the cross product is doing!
+
+Now, there's one last step to our understanding: Make it all 3D. If we go back to our vectors $(3,0)$ and $(0,2)$, we can make these 3D with relative ease. $(3,0,0)$ and $(0,2,0)$ essentially just aligns our plane along the $x$ and $y$. We know that our $z$ component is going to be $+-6$. So our vector is (x, y, +-6). If the $x$ and $y$ component were anything other than 0, our vector wouldn't be pointing straight away from the shape. That means our resultant vector is $(0, 0, +-6)$; it faces either straight up or straight down from the plane. The sign tells us which direction the plane is pointing while the magnitude is the area of the parallelogram from $(3,0)$ and $(0,2)$. We can say that the (incomplete) formula for the cross product must be:
+
+$$
+A \times B = \begin{bmatrix}
+x \\
+y \\
+A_xB_y-A_yB_x
+\end{bmatrix}
+$$
+
+Let's consider one other example to find out what the x and y components should be.
+
+Let $A=(1,4,0)$ and $B=(3,3,0). We can intuit that our resultant vector is going to point straight up our down like our last, which means it's going to equal:
+
+$$
+A \times B = \begin{bmatrix}
+0 \\
+0 \\
+A_xB_y-A_yB_x=-9
+\end{bmatrix}
+$$
+
+Symmetry suggests that the $x$ and $y$ components will have similar equations, but there's necessarily an easy way 
+
 
 
 
