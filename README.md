@@ -507,7 +507,7 @@ A_xB_y-A_yB_x
 \end{bmatrix}
 $$
 $$
-Area = \|A\timesB\|
+Area = \|A\times B\|
 $$
 
 Now if we imagine our surface is on the plane of $z=0$, then we know the following to be true:
@@ -527,7 +527,7 @@ $$
 Based on our assumptions, we don't really care about the resultant vector, only its magnitude and sign. Now let's add another assumption: we only care about magnitudes (afterall this is what we physically measure). So instead of vectors, we say a parallelogram with sides of 2 and 3 and a height of 1. This let's assume assume one vector is aligned along the x axis and thus has a null $y$ component.
 
 $$
-Area = A_xB_y = base\dotB_y = base\dotheight
+Area = A_xB_y = base\dot B_y = base\dot height
 $$
 
 Hopefully this illustrates how our simple area formulas are shorthands for very specific cross products and how the cross product is what we've actually been doing since elementary school. We've already shown how the square is a specific instance of our formula where $height = B_y = \|B\|, but almost all area formulas are simple implementations of this as well.
@@ -535,13 +535,13 @@ Hopefully this illustrates how our simple area formulas are shorthands for very 
 ##### Triangle:
 
 $$
-\frac{A\timesB}{2} = \frac{1}{2}bh
+\frac{A\times B}{2} = \frac{1}{2}bh
 $$
 
 ##### Trapezoid:
 
 $$
-\frac{a+b}{2}h =ah + \frac{b-a}{2}h = C\timesA + \frac{(B-A)\timesC}{2}
+\frac{a+b}{2}h =ah + \frac{b-a}{2}h = C\times A + \frac{(B-A)\times C}{2}
 $$
 
 
