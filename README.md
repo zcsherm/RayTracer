@@ -448,7 +448,7 @@ $$
 
 Let's consider one other example to find out what the x and y components should be.
 
-Let $A=(1,4,0)$ and $B=(3,3,0). We can intuit that our resultant vector is going to point straight up our down like our last, which means it's going to equal:
+Let $A=(1,4,0)$ and $B=(3,3,0)$. We can intuit that our resultant vector is going to point straight up our down like our last, which means it's going to equal:
 
 $$
 A \times B = \begin{bmatrix}
@@ -458,10 +458,42 @@ A_xB_y-A_yB_x=-9
 \end{bmatrix}
 $$
 
-Symmetry suggests that the $x$ and $y$ components will have similar equations, but there's necessarily an easy way 
+Symmetry suggests that the $x$ and $y$ components will have similar equations, and that the equation should equal 0.
 
+$$
+x = \alpha - \beta = 0
+$$
+$$
+y = \gamma - \delta = 0
+$$
+$$
+\alpha = \beta
+$$ 
+$$
+\gamma = \delta
+$$
 
+There is a really easy way to get this inequality to balance: Assume that $A_z$ and $B_z$ are components of each:
+$$
+A_zB_? - A_?B_z
+$$
+$$
+A_?B_z - A_zB_?
+$$
 
+If we look to symmetry we can deduce that the unknown components on each side of an equation are the same (x and x, y and y). If the $z$ component was found using the x and y components, it follows that the $x$ component uses $y$ and $z$. So our full formula is:
+
+$$
+A \times B = \begin{bmatrix}
+A_yB_z-A_zB_x \\
+A_zB_x-A_xB_y \\
+A_xB_y-A_yB_x
+\end{bmatrix}
+$$
+
+This is the full formula of the cross product. It produces a vector that is orthogonal to the plane of 2 other vectors and has a magnitude equal to the area of the parallelogram formed by those vectors. More specifically, the magnitude of the resultant is equal to the product of the other 2 vectors magnitude and sine of the angle between them.
+
+Let's see if we can tie this all together now.
 
 Note to self: Talk about signs, 2D sign is determined solely by order of vectors as there is only positive or negative facing. In 3D, We need something richer to describe what direction. Also mention determinant 
 
