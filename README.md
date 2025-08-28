@@ -485,15 +485,65 @@ If we look to symmetry we can deduce that the unknown components on each side of
 
 $$
 A \times B = \begin{bmatrix}
-A_yB_z-A_zB_x \\
-A_zB_x-A_xB_y \\
+A_yB_z-A_zB_y \\
+A_zB_x-A_xB_z \\
 A_xB_y-A_yB_x
 \end{bmatrix}
 $$
 
-This is the full formula of the cross product. It produces a vector that is orthogonal to the plane of 2 other vectors and has a magnitude equal to the area of the parallelogram formed by those vectors. More specifically, the magnitude of the resultant is equal to the product of the other 2 vectors magnitude and sine of the angle between them.
+This is the full formula of the cross product. It produces a vector that is orthogonal to the plane of 2 other vectors and has a magnitude equal to the area of the parallelogram formed by those vectors. More specifically, the magnitude of the resultant is equal to the product of the other 2 vectors magnitude and sine of the angle between them. This is why the cross product is so important and has so many applications. The main use in this ray tracer is to find the Normal vector for a given surface, and computing the area of a surface.
 
-Let's see if we can tie this all together now.
+Remember how a the sign was all that determined the direction for the cross product in 2 dimensions and how it was binary? Well, in 3 dimensions, a surface could be facing in an infinite number of directions. That's why a 3 dimensional cross product must give us a 3 dimensional resultant; facing can be encoded as a binary in 2 dimensions, but needs to be a vector in infinite directions.
+
+Let's see if we can tie it all together and if this has given us a deeper insight into what the hell the cross product actually does.
+
+In 3 dimensions and with arbitrary points, the cross product finds a vector perpendicular to a surface, and finds the area contained by the basis vectors of that surface. 
+
+$$
+A \times B = \begin{bmatrix}
+A_yB_z-A_zB_y \\
+A_zB_x-A_xB_z \\
+A_xB_y-A_yB_x
+\end{bmatrix}
+$$
+$$
+Area = \|A\timesB\|
+$$
+
+Now if we imagine our surface is on the plane of $z=0$, then we know the following to be true:
+
+$$
+A \times B = \begin{bmatrix}
+0 \\
+0 \\
+A_xB_y-A_yB_x
+\end{bmatrix}
+$$
+
+$$
+Area = A_xB_y-A_yB_x = C_z
+$$
+
+Based on our assumptions, we don't really care about the resultant vector, only its magnitude and sign. Now let's add another assumption: we only care about magnitudes (afterall this is what we physically measure). So instead of vectors, we say a parallelogram with sides of 2 and 3 and a height of 1. This let's assume assume one vector is aligned along the x axis and thus has a null $y$ component.
+
+$$
+Area = A_xB_y = base\dotB_y = base\dotheight
+$$
+
+Hopefully this illustrates how our simple area formulas are shorthands for very specific cross products and how the cross product is what we've actually been doing since elementary school. We've already shown how the square is a specific instance of our formula where $height = B_y = \|B\|, but almost all area formulas are simple implementations of this as well.
+
+##### Triangle:
+
+$$
+\frac{A\timesB}{2} = \frac{1}{2}bh
+$$
+
+##### Trapezoid:
+
+$$
+\frac{a+b}{2}h =ah + \frac{b-a}{2}h = C\timesA + \frac{(B-A)\timesC}{2}
+$$
+
 
 Note to self: Talk about signs, 2D sign is determined solely by order of vectors as there is only positive or negative facing. In 3D, We need something richer to describe what direction. Also mention determinant 
 
