@@ -527,15 +527,15 @@ $$
 Based on our assumptions, we don't really care about the resultant vector, only its magnitude and sign. Now let's add another assumption: we only care about magnitudes (afterall this is what we physically measure). So instead of vectors, we say a parallelogram with sides of 2 and 3 and a height of 1. This let's assume assume one vector is aligned along the x axis and thus has a null $y$ component.
 
 $$
-Area = A_xB_y = base\dot B_y = base\dot height
+Area = A_xB_y = base \cdot B_y = base \cdot height
 $$
 
-Hopefully this illustrates how our simple area formulas are shorthands for very specific cross products and how the cross product is what we've actually been doing since elementary school. We've already shown how the square is a specific instance of our formula where $height = B_y = \|B\|, but almost all area formulas are simple implementations of this as well.
+Hopefully this illustrates how our simple area formulas are shorthands for very specific cross products and how the cross product is what we've actually been doing since elementary school. We've already shown how the square is a specific instance of our formula where $height = B_y = \|B\|$, but almost all area formulas are simple implementations of this as well.
 
 ##### Triangle:
 
 $$
-\frac{A\times B}{2} = \frac{1}{2}bh
+\frac{\vec{A} \times \vec{B}}{2} = \frac{1}{2}bh
 $$
 
 ##### Trapezoid:
@@ -544,6 +544,39 @@ $$
 \frac{a+b}{2}h =ah + \frac{b-a}{2}h = C\times A + \frac{(B-A)\times C}{2}
 $$
 
+##### Hexagon:
+
+$$
+\frac{3 \sqrt{3}}{2}a^2 = 3 \|A_1\|\|A_2||\sin(120^\circ) = 3\frac{\sqrt{3}}{2}\|A||^2 = 3(A_1 \times A_2)
+$$
+
+Though, trigonometric functions are still needed for this one if we want to get the vectorized form of each side.
+
+
+#### Why
+
+There is still the question of why this works. While I love analyzing things with no established axioms, I think we're better off accepting that it just works
+
+No?
+
+Fine, let's see if we can figure it out.
+
+Let's imagine any plane that's not aligned with any of our basis axes.
+Our normal vector is going to point off into another arbitrary direction.
+Imagine we are constructing our normal, component by component.
+If we start with the $z$ component, we get a vector that either points straight forward, or staight away.
+Then if we move on the $x$ component, our vector yaws to either side.
+Finally, the $y$ component causes our vector to pitch up or down.
+
+It should be clear that the normal is being dialed in, bit by bit. This suggests there is something systematic and innate that's causing this
+It might be helpful to consider an alternative definition:
+
+$$
+\vec{A} \cdot \vec{C} = 0 = \vec{B} \cdot \vec{C} 
+$$
+$$
+A_xC_x + A_yC_y + A_zC_z = 0 = B_xC_x + B_yC_y + B_zC_z
+$$
 
 Note to self: Talk about signs, 2D sign is determined solely by order of vectors as there is only positive or negative facing. In 3D, We need something richer to describe what direction. Also mention determinant 
 
