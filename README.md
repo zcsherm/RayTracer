@@ -574,14 +574,64 @@ It might be helpful to consider an alternative definition:
 $$
 \vec{A} \cdot \vec{C} = 0 = \vec{B} \cdot \vec{C} 
 $$
+
 $$
 A_xC_x + A_yC_y + A_zC_z = 0 = B_xC_x + B_yC_y + B_zC_z
 $$
 
-Note to self: Talk about signs, 2D sign is determined solely by order of vectors as there is only positive or negative facing. In 3D, We need something richer to describe what direction. Also mention determinant 
+This tells us that our resultant vector is only orthogonal to both bases vectors if it balances these equations. From this, it should be pretty clear that $C$ doesn't have very much freedom if $A$ and $B$ are fixed. Another detail hidden by this is that the length of $C$ is irrelevant. Any vector that is a scalar multiple of $C$ is going to balance the equation. 
 
+There's not too much that we can do with this equation at a basic level other than to recognize that the set of solutions for $C$ lies upon a line; the nature of this balancing act forces a unique solution.
 
+It still doesn't sufficiently explain why $z$ is determined by the $x$ and $y$. For that, it'll help to step back into 2D land. Suppose we have the following vectors:
 
+$$
+A = \begin{bmatrix}
+1 \\
+1 \\
+1
+\end{bmatrix}
+B = 
+\begin{bmatrix}
+3 \\
+2 \\
+4
+\end{bmatrix}
+$$
+
+If we drop them to 2D by losing the z coordinate we get
+
+$$
+\begin{bmatrix}
+1 \\
+1
+\end{bmatrix} \text{ and } \begin{bmatrix}
+3 \\
+2
+\end{bmatrix}
+$$
+
+This gives us an illusion of our original 2 vectors; a projection. For all intents and purposes we can view these 2 vectors as though we grew them on graph paper. If we wanted to draw a line that is perpendicular to both vectors, we cannot on the paper. We are limited by our 2 dimensions. The only direction that satisfies the condition is straight up from the page, which means we have to introduce a 3rd dimension. So our perpendicular vector is some multiple of:
+
+$$
+\begin{bmatrix}
+0 \\
+0 \\
+1
+\end{bmatrix}
+$$
+
+Because our dot product equation from earlier showed us how each component of the cross product is dependent on the other components, we know it cannot be an arbitrary value. For now, let's assume the multiple is the area between the 2D vectors.
+
+$$
+\begin{bmatrix}
+0 \\
+0 \\
+-1
+\end{bmatrix}
+$$
+
+Now, let's repeat this, but now we decide to lop off the $x$ axis.
 
 
 
