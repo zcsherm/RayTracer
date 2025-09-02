@@ -266,16 +266,7 @@ $$
 ||D_1 + D_2||
 $$
 
-If you experiment with other parallelograms, you'll notice that these methods don't always work. This should tell you that these equations are actually special cases of a more general form. In the first case, it's because our vectors are perpendicular to each other and pretty neatly oriented about the origin. The second case depends on our diagonals having equivalent magnitudes, and it doesn't hurt that one is $(x, -y)$ of the other. This can only happen when our shape is a rectangle and the angle between edges and diagonals is 90 degrees. After much pushing equations around, the addition of diagonals is only viable when the xor of the following is true:
-
-$$
-2Ax = sqrt(Ax^2) = sqrt(By^2)
-$$
-$$
-2Ay = sqrt(Ay^2) = sqrt(Bx^2)
-$$
-
-(if you want to be exacting, the actual conditions depend on the quadrants of the vectors.)
+If you experiment with other parallelograms, you'll notice that these methods don't always work. In the first case, it's because our vectors are perpendicular to each other and pretty neatly oriented about the origin. The second case depends on the y component equaling 2.  So perhaps, the first wone is the one we want to explore more.
 
 ##### The actual equations....maybe
 
