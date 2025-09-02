@@ -237,7 +237,56 @@ With our plane equation in hand, we can start checking if our vision ray interse
 
 Imagine you're in a race car travelling down an infinitely long straight stretch of road. This race car is special and can't turn and travels in a perfectly straight line. There is a guard rail on the right hand side of the road. No matter how far you go, you will never collide with the guard rail. This is because you're always going straight ahead, and the guard rail stretches in a straight line along the same direction. Your movement and the guard rail are parallel. Now, suppose that the guard rail was angled ever so slightly towards the center of the road. No matter how slight this angle is, your car will eventually collide with the guard rail; you and the guard rail are no longer parallel.
 
+If we want to prevent a divide by 0 error, it's gonna be a good idea to check if our ray is parallel to the surface. What if I told you we can do this with surprising ease. All we need is the normal.
 
+If the normal is perpendicular to the surface, then the normal is perpendicular to any vector on that plane or parallel to it. Rather than checking for parallelism, we're gonna check if our ray is perpendicular to the normal! This is a really easy statement to check:
+
+$$
+\hat D \cdot \hat N = 0
+$$
+
+If this statement is truthy, then our ray must be parallel to the surface. In practice, it's a good idea to check for a range around 0. This can reduce some overhead by weeding out nearly parallel surfaces.
+
+#### Intersection
+
+Ok, we have our normal, plane constant, and know that our ray is not parallel to the surface. What now? We'll now we need to see where our ray intersects the plane that the surface is on.
+
+Doing this requires us to plug our ray formula into our plane formula:
+
+$$
+r(t)= O + tD
+$$
+
+$$
+F(x,y,z) = Ax + By + Cz = d
+$$
+
+$$
+F(r(t)) = A(O_x + tD_x) + B(O_y + tD_y) + C(O_y + tD_y) = 0
+$$
+
+If change this into dot products we wind up getting:
+
+$$
+F(r(t)) = O \cdot N + t (D \cdot N) = d 
+$$
+
+$$
+t = \frac{d - O \cdot N}{D \cdot N}
+$$
+
+This gives us the length our ray has to travel to intersect the plane. To find the actual point, we then plug this t value into our ray:
+
+$$
+P = O + \frac{d - O \cdot N}{D \cdot N}D
+$$
+
+The point given by this formula is the intersection of our ray and the plane that the surface resides. Yay!
+However, there is one last hurdle...
+
+#### Is the point on the surface
+
+Now we need to find out if this point exists inside our surface. You might believe that this is really easy, given how easily we can do this in reality. However, the technique is far trickier in our simulation.
 
 ### Cross Product - revisited
 
