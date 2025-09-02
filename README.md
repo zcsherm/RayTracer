@@ -553,9 +553,9 @@ $$
 Though, trigonometric functions are still needed for this one if we want to get the vectorized form of each side.
 
 
-#### Why
+#### Why?
 
-There is still the question of why this works. While I love analyzing things with no established axioms, I think we're better off accepting that it just works
+There is still the question of why this works. While I love analyzing things with no established axioms, I think we're better off accepting that it just works.
 
 No?
 
@@ -599,7 +599,7 @@ B =
 \end{bmatrix}
 $$
 
-If we drop them to 2D by losing the z coordinate we get
+If we drop them to 2D by losing the z coordinate we get:
 
 $$
 \begin{bmatrix}
@@ -631,7 +631,52 @@ $$
 \end{bmatrix}
 $$
 
-Now, let's repeat this, but now we decide to lop off the $x$ axis.
+Now, let's repeat this, but imagine we're looking at our vectors from the side. Specifically, our point of view is aligned along the x axis. This means we can lop off the x coordinates:
+
+$$
+\begin{bmatrix}
+y=1 \\
+z=1
+\end{bmatrix} \text{ and } \begin{bmatrix}
+y=2 \\
+z=4
+\end{bmatrix}
+$$
+
+Much like our last example, we know that our normal to these 2 is going to only have an $x$ component. Again, let's assume that it's gonna be the area between these 2.
+
+$$
+\begin{bmatrix}
+2 \\
+0 \\
+0
+\end{bmatrix}
+$$
+
+If we do the same thing but with the $y$ axis, we get a normal of:
+
+$$
+\begin{bmatrix}
+0 \\
+-1 \\
+0
+\end{bmatrix}
+$$
+
+Now, if add these vectors together, we actually get the normal for our original 3 dimensional coordinate plane.
+
+$$
+\begin{bmatrix}
+2 \\
+-1 \\
+-1
+\end{bmatrix}
+$$
+
+This should illustrate exactly how the normal gets dialed in and how the normal is constructed by examining the plane along each basis vector. It also demonstrates how the area of our surface is a construction from each of these 'projected areas'. Each of the projections we examined had an area of 2, 1, and 1. Our actual surface had an area of $\sqrt{6}$. Interestingly, the area of our surface is given by $\sqrt{A_1^2 + A_2^2 + A_3^2}$. I'll be honest, I can't think of an intuitive way to explain why the the surface area of a surface is found by the pythagorean theorem of the projected areas. At the very least, it demonstrates that if each component in the cross product is the area of that projection, the magnitude of the cross product must be the area of the unprojected surface.
+
+This also demonstrates another interesting feature. If you don't really know what the shape is, and only know the sizes of these 3 shadows, you can actually determine the area of the shape and what direction it's facing. I'm not sure what sort of bizarro world this could be applied to, but it's a fun little nugget of knowledge.
+
 
 
 
