@@ -286,8 +286,21 @@ However, there is one last hurdle...
 
 #### Is the point on the surface
 
-Now we need to find out if this point exists inside our surface. You might believe that this is really easy, given how easily we can do this in reality. However, the technique is far trickier in our simulation.
+Now we need to find out if this point exists inside our surface. You might initially think that this is really easy, given how easily we can do this in reality. However, the technique is far trickier in our simulation and needs a leap of imagination.
 
+If you want to puzzle it out for yourself, I recommend envisioning you're throwing darts at a triangular board. Some land on the board and some stick into the wall around the board. What is different about the darts in the wall, compared to the darts in the board?
+We need a quantifiable way of detecting if a point is inside of a surface, and it has to be generalized; it must work for a variety of shapes, sizes and orientations of surfaces. You might consider doing comparisons between vertices: is it between the highest and lowest vertices and between the left most and right most? 
+This method is not general enough. While you an make this work, it requires a lot of extra math and edge cases.
+Discretizing space is one possibility. If the set of all points inside the surface is finite, then checking membership in this set is trivial. However, as mentioned earlier, this is inefficient, inelegant, and (as future Lead's will tell you) not the industry standard.
+
+You may have noticed that, each little dart inside the board is completely surrounded by the edges of the surface. Those in the wall are mostly surrounded by wall, with the board being a very small part of their surroundings.
+If you stood on the dart and looked around in a circle, the board would always be visible. The question is, is this codeable? This method is most certainly codeable! However, it has some downsides to an alternate technique. Since this was the solution I came up with, I would still like to explore it.
+
+We begin by creating 3 radial lines from the our dart to each vertex: $DA, DB, DC$. Now our goal is to determine the total angle between these line. If it sums to $2\pi$ or about that, then we know we've completed a full revolution about the point and it must reside in the surface. Measuring the angle between 2 vectors is fairly easy with the dot product.
+The dot product is the cross products little brother. Rather than measuring how perpendicular lines are, it measures how parallel they are. The dot product is equivalent to the following:
+$$
+\|A\|\|B\|\cos(\theta) = A \cdot B
+$$
 ### Cross Product - revisited
 
 If you can't stand treating the cross product as a black box, then let's see if we can work our way through the logic of it.
