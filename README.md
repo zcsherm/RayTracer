@@ -298,9 +298,26 @@ If you stood on the dart and looked around in a circle, the board would always b
 
 We begin by creating 3 radial lines from the our dart to each vertex: $DA, DB, DC$. Now our goal is to determine the total angle between these line. If it sums to $2\pi$ or about that, then we know we've completed a full revolution about the point and it must reside in the surface. Measuring the angle between 2 vectors is fairly easy with the dot product.
 The dot product is the cross products little brother. Rather than measuring how perpendicular lines are, it measures how parallel they are. The dot product is equivalent to the following:
+
 $$
 \|A\|\|B\|\cos(\theta) = A \cdot B
 $$
+
+Rearranging the equation we can solve for theta:
+
+$$
+\theta = \cos^{-1}(\frac{A \cdot B}{\|A\|\|B\|})
+$$
+
+We also want to add a $ % \pi $ to this equation, ensuring that points outside of the triangle (large angles) are accounted for.
+
+Now we can just compare the radial lines (making sure we follow a winding order) and sum up our thetas. If the sum is about $2\pi$ or $360^{\circ}$ then we know our point is inside the triangle! At the same time, if the sum is less than a full circle then the point must be outside the triangle. There's just a few problems with this implementation. The first is that we're now dealing with trigonometric functions. Computers handle trig functions in weird ways. On fancy-dancy modern computers, the FPU has instructions specifically for calculating trig functions effectively. This usually involves a Taylor Series or the CORDIC algorithm. On devices without a dedicated FPU, a more common technique is to use a lookup table. Neither of these are attractive options: One uses a whole lot of black box math, the other uses a lot more memory and is discretized. Another limitation of this method is that it's not immediately evident where on the surface a point is. It can be done, but we need to compare all of the angles to each other as well as against the interior angles of the surface.
+
+Instead, we'll use the industry standard.
+
+##### Barycentric coordinates
+
+Barycentric coordinates are a way of describing a point's coordinates, relative to a set of other points. While the wikipedia page for this concept is very arcane, it's surprisingly intuitive.
 ### Cross Product - revisited
 
 If you can't stand treating the cross product as a black box, then let's see if we can work our way through the logic of it.
