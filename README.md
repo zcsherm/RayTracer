@@ -311,13 +311,13 @@ $$
 
 We also want to add a $ % \pi $ to this equation, ensuring that points outside of the triangle (large angles) are accounted for.
 
-Now we can just compare the radial lines (making sure we follow a winding order) and sum up our thetas. If the sum is about $2\pi$ or $360^{\circ}$ then we know our point is inside the triangle! At the same time, if the sum is less than a full circle then the point must be outside the triangle. There's just a few problems with this implementation. The first is that we're now dealing with trigonometric functions. Computers handle trig functions in weird ways. On fancy-dancy modern computers, the FPU has instructions specifically for calculating trig functions effectively. This usually involves a Taylor Series or the CORDIC algorithm. On devices without a dedicated FPU, a more common technique is to use a lookup table. Neither of these are attractive options: One uses a whole lot of black box math, the other uses a lot more memory and is discretized. Another limitation of this method is that it's not immediately evident where on the surface a point is. It can be done, but we need to compare all of the angles to each other as well as against the interior angles of the surface.
+Now we can just compare the radial lines (making sure we follow a winding order) and sum up our thetas. If the sum is about $2\pi$ or $360^{\circ}$ then we know our point is inside the triangle! At the same time, if the sum is less than a full circle then the point must be outside the triangle. There's just a few problems with this implementation. The first is that we're now dealing with trigonometric functions. Computers handle trig functions in weird ways. On fancy-dancy modern computers, the FPU has instructions specifically for calculating trig functions effectively. This usually involves a Taylor Series or the CORDIC algorithm. On devices without a dedicated FPU, a more common technique is to use a lookup table. Neither of these are attractive options: One uses a whole lot of black box math (though highly efficient), the other uses a lot more memory and is discretized. Another limitation of this method is that it's not immediately evident where on the surface a point is. It can be done, but we need to compare all of the angles to each other as well as against the interior angles of the surface.
 
 Instead, we'll use the industry standard.
 
 ##### Barycentric coordinates
 
-Barycentric coordinates are a way of describing a point's coordinates, relative to a set of other points. While the wikipedia page for this concept is very arcane, it's surprisingly intuitive.
+Barycentric coordinates are a way of describing a point's coordinates, relative to a set of other points. While the wikipedia page for this concept is very arcane, it's surprisingly intuitive. All we're basically doing is getting the proportion
 ### Cross Product - revisited
 
 If you can't stand treating the cross product as a black box, then let's see if we can work our way through the logic of it.
